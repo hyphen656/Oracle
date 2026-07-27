@@ -162,6 +162,7 @@
         '. ' + (wasRight ? 'Hit' : 'Miss') + '. ' + correct() +
         ' of ' + oracle.history.length + '.';
       save();
+      changed();
 
       if (oracle.history.length >= target) { finish(); return; }
 
@@ -227,8 +228,13 @@
       endstate.append(actions);
 
       endstate.hidden = false;
+      changed();
       readout.textContent = 'Session complete. The oracle predicted ' +
         correct() + ' of your ' + n + ' presses, or ' + pct + ' percent.';
+    }
+
+    function changed() {
+      if (typeof opts.onChange === 'function') opts.onChange(api);
     }
 
     function reset() {
@@ -243,6 +249,7 @@
       keyEls.D.disabled = false;
       renderCounters();
       commit(); arm();
+      changed();
     }
 
     /* ------------------------------------------------------------ boot */

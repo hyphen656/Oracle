@@ -199,6 +199,19 @@ figcaption b{font-family:var(--mono);font-weight:500;font-size:.75rem;
 
 .refs{font-size:.9375rem}
 .refs li{margin-bottom:.75em}
+.refs li:target{background:rgba(27,77,143,.07);outline:4px solid rgba(27,77,143,.07)}
+
+code{font-family:var(--mono);font-size:.9em}
+sup{font-size:.7em;line-height:0;vertical-align:super}
+sup a,a sup{text-decoration:none}
+a:has(sup){text-decoration:none;padding-inline:.1em}
+
+/* figure boxes hold their height before data arrives — no layout shift */
+.figbox{
+  min-height:300px;border:1px solid var(--hairline);
+  display:grid;place-items:center;padding:20px;
+}
+.figbox .empty{font-size:.875rem;color:var(--graphite);text-align:center;max-width:26rem}
 
 /* ------------------------------------------------------- breakpoints */
 @media (max-width:47.99rem){

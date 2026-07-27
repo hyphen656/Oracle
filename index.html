@@ -33,40 +33,398 @@
 <main id="lecture">
   <article>
 
+    <!-- ============================================ the story -->
     <section class="section measure" id="story">
       <p class="eyebrow">The story</p>
       <h2>Two machines in a corridor at Bell Labs</h2>
-      <p><em>Slice 4 writes this section.</em></p>
+
+      <p>This experiment is seventy years old, and it was built out of relays
+      before it was ever written as software.</p>
+
+      <p>Some time in the early 1950s, at Bell Laboratories, an engineer named
+      David Hagelbarger built a machine to play <em>matching pennies</em>
+      against his colleagues. Two players each choose heads or tails in
+      secret; one wins if the choices match, the other if they differ. Played
+      against someone truly unpredictable, it is a coin flip and nothing more.
+      Hagelbarger called his machine SEER, for SEquence Extrapolating
+      Robot.<a href="#ref-2"><sup>2</sup></a></p>
+
+      <p>SEER did not model you in any deep way. It tracked three facts about
+      the last two rounds — whether it had won or lost the play before last,
+      whether it had played the same or differently, and whether it had won or
+      lost the last play. Three yes-or-no facts give eight possible
+      situations, and for each of the eight the machine remembered whether
+      playing the same had been working. It counted that on a small reversible
+      counter that stopped at plus and minus three, which Hagelbarger
+      described with a phrase worth keeping: the stops "in effect make the
+      machine forget ancient history."<a href="#ref-2"><sup>2</sup></a></p>
+
+      <p>Claude Shannon, who worked down the hall, took note and built his
+      own. His memorandum of 18 March 1953 opens by giving Hagelbarger the
+      credit plainly, and then makes a comparison that tells you exactly what
+      kind of machine this is:</p>
+
+      <blockquote>
+        <p>This machine is a somewhat simplified model of a machine designed
+        by D. W. Hagelbarger. It plays what is essentially the old game of
+        matching pennies or "odds and evens." This game has been discussed
+        from the game theoretic angle by von Neumann and Morgenstern, and from
+        the psychological point of view by Edgar Allen Poe in the "The
+        Purloined Letter." Oddly enough, the machine is aimed more nearly at
+        Poe's method of play than von Neumann's.</p>
+        <cite>Shannon, A Mind-Reading (?) Machine, 1953<a href="#ref-1"><sup>1</sup></a></cite>
+      </blockquote>
+
+      <p>That is the whole idea in one sentence. Game theory tells you the
+      correct way to play matching pennies: flip a mental coin, be genuinely
+      random, and no opponent can beat you over time. Poe's detective does
+      something else entirely — he studies his opponent and guesses what sort
+      of person would choose what. Shannon built the detective, because the
+      detective wins. Not against an ideal player. Against an actual one.</p>
+
+      <p>Shannon's machine looked for patterns and, in his words, "assumes
+      that the player will follow the patterns the next time the same
+      situation arises." When it had not seen a pattern repeat at least twice,
+      it moved at random — and the randomness came from a commutator spinning
+      about ten times a second, sampled at the moment you pressed the
+      button. Its unpredictability was harvested from the jitter in your own
+      timing.<a href="#ref-1"><sup>1</sup></a></p>
+
+      <h3>He knew exactly how to beat it</h3>
+
+      <p>What makes Shannon's memo remarkable is that he did not oversell it.
+      He worked out how beatable the machine was and published the method:</p>
+
+      <blockquote>
+        <p>A mathematical analysis of the strategy used in this machine shows
+        that it can be beaten by the best possible play in the ratio 3:1. To
+        do this it is necessary to keep track of the contents of all the
+        memory cells in the machine. […] It is extremely difficult to carry
+        out this program mentally because of the amount of memory and
+        calculation necessary.</p>
+        <cite>Shannon, 1953<a href="#ref-1"><sup>1</sup></a></cite>
+      </blockquote>
+
+      <p>The machine is not unbeatable. It is beatable three times out of
+      four — <em>on paper</em>. You simply cannot run the method in your head
+      while playing. That gap, between what is possible in principle and what
+      a person can actually do in the moment, is the entire subject of this
+      page, and Shannon named it in 1953.</p>
+
+      <h3>The two machines played each other</h3>
+
+      <p>Inevitably, someone wondered which machine was better. Hagelbarger
+      recorded what happened:</p>
+
+      <blockquote>
+        <p>After much discussion an umpire machine was built which connected
+        the two machines, and they were allowed to play several thousand
+        games. The agility of the small machine triumphed, and it beat the
+        larger one about 55-45.</p>
+        <cite>Hagelbarger, 1956, quoted in Breazu et al., 2020<a href="#ref-2"><sup>2</sup></a></cite>
+      </blockquote>
+
+      <p>Shannon's simpler machine, built with about half as many relays, beat
+      the more elaborate one. In 2020 a group at Sibiu reimplemented both in
+      software and played them against each other ten times. Averaged over
+      games of a hundred plays, Shannon's won 55.8 to 44.2 — a sixty-year-old
+      piece of laboratory folklore, checked and
+      confirmed.<a href="#ref-3"><sup>3</sup></a></p>
+
+      <p>Shannon's machine still exists. William Poundstone went to see it at
+      the MIT Museum's storage facility and did not play it — "that would have
+      been almost impious," he wrote, "for it recorded a final score: Player
+      3507. Machine 5010." Across every person who ever sat down with it, the
+      machine won about 59% of the time. That is a lifetime tally on an
+      exhibit rather than a controlled experiment, and it is the only
+      machine-against-humans number that survives at
+      all.<a href="#ref-4"><sup>4</sup></a></p>
+
+      <h3>Fifty years later, in a lecture hall</h3>
+
+      <p>The version you just played comes from Scott Aaronson, who wrote it
+      for a class he taught at Berkeley and describes it in <em>Quantum
+      Computing Since Democritus</em>:</p>
+
+      <blockquote>
+        <p>I wrote a simple little program that would let people type either
+        "f" or "d" and would predict which key they were going to push next.
+        It's actually very easy to write a program that will make the right
+        prediction about 70% of the time. Most people don't really know how to
+        type randomly. They'll have too many alternations and so on. […] I
+        couldn't even beat my own program, knowing exactly how it worked. I
+        challenged people to try this and the program was getting between 70%
+        and 80% prediction rates. Then, we found one student that the program
+        predicted exactly 50% of the time. We asked him what his secret was
+        and he responded that he "just used his free will."</p>
+        <cite>Aaronson, Quantum Computing Since Democritus, Lecture 18<a href="#ref-5"><sup>5</sup></a></cite>
+      </blockquote>
+
+      <p>Hold on to two things there. The first is that Aaronson could not
+      beat his own program while knowing its source code — the same admission
+      Shannon made about his relays. The second is the student, whom we will
+      come back to at the end, because how he did it is the point rather than
+      the exception.</p>
+
+      <h3>Where our version departs</h3>
+
+      <p>Ours is not a copy of either machine. Shannon's tracked whether it
+      was winning and whether you had changed your choice — eight situations,
+      no memory of your actual sequence. Ours ignores winning and losing
+      entirely and simply counts what you pressed after each recent run of
+      presses. Aaronson's used runs of five, and so does ours. His forgot
+      nothing; Hagelbarger's deliberately forgot; ours also never forgets, so
+      a habit you drop early keeps counting against you for the rest of the
+      session.</p>
     </section>
 
+    <!-- ============================================ in English -->
     <section class="section measure" id="in-english">
       <p class="eyebrow">How it works, in English</p>
       <h2>What just happened to you</h2>
-      <p><em>Slice 4 writes this section.</em></p>
+
+      <p>There is no model of psychology in this program, and nothing about
+      free will. It keeps a notebook.</p>
+
+      <p>Every time you press a key, it writes down what you had just pressed
+      beforehand, and what you pressed next. Not once, but at six different
+      lengths at the same time. Suppose your last five presses were F, D, D,
+      F, F, and then you press D. The notebook gains six entries: after
+      <code>FDDFF</code> you pressed D; after <code>DDFF</code> you pressed D;
+      after <code>DFF</code> you pressed D; after <code>FF</code> you pressed
+      D; after <code>F</code> you pressed D; and, ignoring context entirely,
+      you pressed D.</p>
+
+      <p>To guess your next press, it reads the notebook backwards. It takes
+      your last five presses and asks: have I seen this exact run before, and
+      if so, what did you do next? If it has seen that run at least twice and
+      you did not do both things equally often, it answers with whichever you
+      did more. If the run is new, or it has only seen it once, or you split
+      evenly — it shortens the question. What about the last four presses?
+      The last three? Two? One? And if all of that fails, it flips a coin,
+      and that coin flip counts against its score like any other guess.</p>
+
+      <p>That shortening is the only clever thing in the program, and it is
+      worth understanding, because it is where most naive versions go wrong.
+      A long run is a specific match: it tells you a lot when it applies. But
+      early in a session you have not produced many five-press runs, so most
+      of them have been seen exactly once, and a single observation is not
+      evidence — it is a coincidence. A short run is vaguer but far better
+      attested. The program prefers the longest run it has seen <em>often
+      enough to trust</em>, and slides down to shorter, better-supported
+      questions when the specific ones are thin.</p>
+
+      <p>Notice what this means. The machine is not clever and it is not
+      reading you. It is asking, over and over, one question: <em>last time
+      things looked like this, what did you do?</em> Everything else on this
+      page is a consequence of the fact that you keep answering.</p>
+
+      <figure class="wide" id="fig-frequency">
+        <div class="figbox" id="figure-frequency" data-figure="frequency"></div>
+        <figcaption><b>Figure 2</b>Your own notebook, from the session you
+        just played. Each row is a run of presses; the bar shows how often you
+        followed it with F rather than D. Rows the machine trusted are marked.
+        With no session stored, this shows a sample instead, clearly
+        labelled.</figcaption>
+      </figure>
     </section>
 
+    <!-- ============================================ actually -->
     <section class="section measure" id="actually">
       <p class="eyebrow">How it works, actually</p>
       <h2>Counting, and knowing when to stop</h2>
-      <p><em>Slice 4 writes this section.</em></p>
+
+      <p>The proper name for the notebook is an <strong>n-gram frequency
+      model</strong>. An n-gram is just a run of n symbols. Here the symbols
+      are your two keys, so there are 2<sup>5</sup> = 32 possible runs of five,
+      16 of four, and so on down to the empty run, which is the count of every
+      press you have ever made.</p>
+
+      <p>Write <em>c</em> for a run of presses — the <em>context</em> — and
+      <em>N</em>(<em>c</em>, F) for the number of times you pressed F
+      immediately after that run. The prediction rule is: take the longest
+      context <em>c</em> matching your recent presses such that</p>
+
+      <p><em>N</em>(<em>c</em>, F) + <em>N</em>(<em>c</em>, D) ≥ 2 &nbsp;and&nbsp;
+      <em>N</em>(<em>c</em>, F) ≠ <em>N</em>(<em>c</em>, D),</p>
+
+      <p>and answer with whichever of F or D is larger. If no context
+      qualifies, answer at random. Dropping to a shorter context when a longer
+      one is unavailable or unreliable is called <strong>backoff</strong>, and
+      it is standard practice in statistical language modelling, where the
+      same problem appears: specific evidence is better, but specific evidence
+      is rare.</p>
+
+      <p>The threshold of two is doing real work. Without it, a run seen a
+      single time — a 1–0 count — would outrank a two-press context seen forty
+      times as 30–10, purely because it was longer. That is the classic
+      sparse-data failure, and it makes the model noisier than counting alone
+      would be.</p>
+
+      <p>Aaronson described his original in almost these terms. Asked what the
+      Berkeley program did, he replied:</p>
+
+      <blockquote>
+        <p>All the basic program did was to examine all 32 possible 5-grams
+        (sequences of five f's and d's), and see which 5-grams were more
+        likely to be followed by f or by d in the user's previous keypresses,
+        and then use that to generate a prediction based on the most recent
+        5-gram. There might have been various enhancements on top of that —
+        e.g., if you're not taking enough data for 5-grams to be useful, then
+        you can also look at 4-grams and 3-grams […]</p>
+        <cite>Aaronson, by email, quoted in Nick Merrill's implementation<a href="#ref-6"><sup>6</sup></a></cite>
+      </blockquote>
+
+      <p>Note the hedge — "there might have been." He is suggesting backoff,
+      not recalling it. Our threshold and our backoff are our own choices,
+      taken on his suggestion, and not a reconstruction of the program he ran
+      in that lecture hall.</p>
+
+      <figure class="wide" id="fig-replay">
+        <div class="figbox" id="figure-replay" data-figure="replay"></div>
+        <figcaption><b>Figure 3</b>One real prediction from your session,
+        step by step: the run it looked for, what it found, where it gave up
+        and shortened the question, and the guess it committed.</figcaption>
+      </figure>
     </section>
 
+    <!-- ============================================ read the machine -->
     <section class="section measure" id="read-the-machine">
       <p class="eyebrow">Read the machine</p>
       <h2>The entire program</h2>
-      <p><em>Slice 4 writes this section.</em></p>
+
+      <p>Below is the predictor, in full. Not a summary of it, not a cleaned
+      up version for the article — the file this page loaded and ran while you
+      were playing. It is <span id="oracle-lines">a few dozen</span> lines
+      long, and its shortness is the lesson: this is all it takes.</p>
+
+      <figure class="wide" id="fig-source">
+        <pre class="codeblock" id="oracle-source" tabindex="0"><code>Loading the source…</code></pre>
+        <figcaption><b>Figure 4</b><span id="oracle-source-note">The predictor,
+        loaded from <code>oracle.js</code> — the same file this page is
+        running.</span></figcaption>
+      </figure>
+
+      <p>Two functions. <code>record</code> writes one press into every
+      context length at once; <code>predict</code> walks from the longest
+      context to the shortest and returns the first one it trusts. There is no
+      training phase, no parameters fitted in advance, no model of you beyond
+      the tally it has built during this one session. It arrived knowing
+      nothing.</p>
     </section>
 
+    <!-- ============================================ about us -->
     <section class="section measure" id="about-us">
       <p class="eyebrow">What it says about us</p>
       <h2>Why you lost</h2>
-      <p><em>Slice 4 writes this section.</em></p>
+
+      <p>A program this small should not be able to do this. It wins because
+      of something about you, and that something has been measured for
+      decades.</p>
+
+      <p>The task you were given — produce a sequence with no pattern in it —
+      is called random sequence generation, and it is one of the more studied
+      failures in experimental psychology. A 2023 review states the finding
+      without hedging: "A common finding of RSG studies is that people are bad
+      randomizers."<a href="#ref-7"><sup>7</sup></a></p>
+
+      <p>The most reliable way people fail is the one Aaronson named in
+      passing when he said players "have too many alternations." The same
+      review calls it the alternation bias: "the avoidance of repetitions,
+      also called <em>negative recency effect</em> or <em>alternation
+      bias</em>, where an excess of alternations and suppression of repeating
+      choices can be observed."<a href="#ref-7"><sup>7</sup></a> Asked to be
+      random, people switch too often and repeat too seldom. A fair coin
+      produces a run of five identical flips more often than feels acceptable,
+      and so people who are imitating a coin trim those runs away.</p>
+
+      <p>It goes deeper than switching too much. Analysing sequences people
+      produced when asked to be random, one study concluded that they "avoid
+      number repetitions and systematically deviate from mathematical
+      randomness," and that the results "emphasize the idea of a complex
+      hidden Markov rule system that underlies humanly generated random number
+      sequences."<a href="#ref-8"><sup>8</sup></a> That phrase is worth
+      pausing on. A hidden rule system with memory is more or less exactly
+      what an n-gram model is built to find. The oracle is not a general
+      mind-reader; it is a device shaped to fit a specific defect, and the
+      defect is real.</p>
+
+      <p>The bias also runs in the other direction. People not only produce
+      too many alternations, they <em>believe</em> too many alternations look
+      random: shown binary sequences to judge, participants rate the ones with
+      the most switching as the most likely, with the peak somewhere around a
+      0.6 to 0.8 rate of alternation against a true value of
+      0.5.<a href="#ref-9"><sup>9</sup></a> Sequences with more structure —
+      HHHHH rather than HTTHT — are judged less
+      probable.<a href="#ref-10"><sup>10</sup></a> We generate wrongly and we
+      grade wrongly, in the same direction.</p>
+
+      <h3>The instruction itself hurt you</h3>
+
+      <p>Here is the part that ought to bother you, and it is why the two
+      experiments on this page are not equivalent. That 2023 review also
+      reports: "if randomness is not overtly requested but rather an implicit
+      requirement, as in competitive games such as matching pennies,
+      randomness seems to be higher."<a href="#ref-7"><sup>7</sup></a></p>
+
+      <p>Shannon's players were playing a game and trying to win. You were
+      told to be random. The literature says the second framing is the worse
+      one — that consciously attempting randomness makes you more predictable
+      than simply trying to beat an opponent. The instruction at the top of
+      this page was, in a small way, working against you.</p>
+
+      <figure class="wide" id="fig-accuracy">
+        <div class="figbox" id="figure-accuracy" data-figure="accuracy"></div>
+        <figcaption><b>Figure 5</b>How the machine learned you: its running
+        accuracy across your session, against the 50% a coin would
+        manage.</figcaption>
+      </figure>
     </section>
 
+    <!-- ============================================ rematch -->
     <section class="section measure" id="rematch">
       <p class="eyebrow">The rematch</p>
       <h2>Now that you know</h2>
-      <p><em>Slice 4 writes this section.</em></p>
+
+      <p>You have read the source. You know it counts runs of up to five, that
+      it needs to have seen a run twice before trusting it, that it never
+      forgets, and that it falls back to a coin flip when it has nothing.</p>
+
+      <p>Play it again.</p>
+
+      <p>Most people do about as badly the second time, and the two people
+      best placed to know said so first. Shannon, having published the exact
+      method for beating his machine three-to-one, noted that it was
+      "extremely difficult to carry out this program mentally."
+      Aaronson, having written his, said flatly: "I couldn't even beat my own
+      program, knowing exactly how it worked."</p>
+
+      <p>Knowing the algorithm gives you nothing, because the algorithm was
+      never the hard part. The hard part is generating the sequence, and you
+      are the one generating it — with the same machinery that produced the
+      biases in the first place. Understanding a bias from the outside does
+      not switch it off from the inside.</p>
+
+      <p>If you do beat it, the interesting question is <em>how</em>. The
+      reliable answers all have one thing in common: they take the decision
+      out of your head. Poundstone, playing a modern implementation, found he
+      did better when he stopped watching the score — "I found I did better
+      when I tried to ignore the feedback, and better yet when I made sure I
+      couldn't see the bars"<a href="#ref-4"><sup>4</sup></a> — and better
+      again when he deliberately repeated choices his instincts wanted to
+      alternate. Others read digits off something external, or run a rule in
+      their head that is cheap to compute but hard to detect.</p>
+
+      <p>Which brings back Aaronson's student, the one the program predicted
+      exactly 50% of the time and who said he "just used his free will." We
+      have no record of what he actually did. But whatever it was, it was a
+      method — a way of choosing that his own habits could not reach. That is
+      not a smaller thing than free will. It is just a more useful description
+      of it: not the absence of a cause, but the ability to hand the decision
+      to something other than your reflexes.</p>
+
+      <p>The machine below is the same file, with the same rules, sealing its
+      guess before every press.</p>
     </section>
 
     <section class="instrument" aria-label="The rematch">
@@ -77,10 +435,81 @@
       </div>
     </section>
 
+    <!-- ============================================ references -->
     <section class="section measure" id="references">
       <p class="eyebrow">References</p>
       <h2>Sources</h2>
-      <p><em>Slice 4 writes this section.</em></p>
+
+      <p>Every factual claim above traces to one of these. Where an original
+      was behind a paywall, the quotation is taken from a source that
+      reproduces it, and that is said plainly.</p>
+
+      <ol class="refs">
+        <li id="ref-1">Claude E. Shannon, "A Mind-Reading (?) Machine," Bell
+        Laboratories Memorandum, 18 March 1953; reprinted in <em>Claude Elwood
+        Shannon: Collected Papers</em>, IEEE Press, 1993, pp. 688–690.
+        <a href="https://glaschick.de/rclab/_media/shannon/shannon_mindreadingmachine_searchable.pdf">Full text (PDF)</a>.</li>
+
+        <li id="ref-2">D. W. Hagelbarger, "SEER, A SEquence Extrapolating
+        Robot," <em>IRE Transactions on Electronic Computers</em>, EC-5(1),
+        1956, pp. 1–7. We could not obtain the original; both quotations here
+        are reproduced from reference 3, which marks its quotations
+        explicitly.</li>
+
+        <li id="ref-3">Macarie Breazu, Daniel Volovici, Daniel I. Morariu,
+        Radu G. Crețulescu, "On Hagelbarger's and Shannon's matching pennies
+        playing machines," <em>International Journal of Advanced Statistics and
+        IT&amp;C for Economics and Life Sciences</em>, 2020, pp. 56–66.
+        <a href="https://sciendo.com/pdf/10.2478/ijasitels-2020-0003">PDF</a>.</li>
+
+        <li id="ref-4">William Poundstone, "How I Beat the Mind-Reading
+        Machine," 30 July 2015.
+        <a href="http://william-poundstone.com/blog/2015/7/30/how-i-beat-the-mind-reading-machine">Article</a>.</li>
+
+        <li id="ref-5">Scott Aaronson, <em>Quantum Computing Since
+        Democritus</em>, Cambridge University Press, 2013, Chapter 18 ("Free
+        Will"). The passage also appears in the freely available lecture notes
+        the book grew from:
+        <a href="https://www.scottaaronson.com/democritus/lec18.html">Lecture 18</a>.</li>
+
+        <li id="ref-6">Scott Aaronson, personal communication to Nick Merrill,
+        reproduced in the <code>aaronson-oracle</code> README. Not a published
+        source.
+        <a href="https://github.com/elsehow/aaronson-oracle">Repository</a>.
+        Aaronson links that implementation himself, and uses the name "the
+        Aaronson Oracle," in
+        <a href="https://scottaaronson.blog/?p=2756">his reply to Roger Penrose</a>.</li>
+
+        <li id="ref-7">Maja Guseva, Carsten Bogler, Carsten Allefeld,
+        John-Dylan Haynes, "Instruction effects on randomness in sequence
+        generation," <em>Frontiers in Psychology</em>, 14:1113654, 2023.
+        <a href="https://www.frontiersin.org/journals/psychology/articles/10.3389/fpsyg.2023.1113654/full">Open access</a>.</li>
+
+        <li id="ref-8">Marc-Andre Schulz, Barbara Schmalbach, Peter Brugger,
+        Karsten Witt, "Analysing humanly generated random number sequences: A
+        pattern-based approach," <em>PLOS ONE</em> 7(7): e41531, 2012.
+        <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0041531">Open access</a>.
+        Its headline prediction figures concern nine-option digit sequences,
+        not two-key sequences, and are not quoted here.</li>
+
+        <li id="ref-9">Giorgio Gronchi, Marco Raglianti, Stefano Noventa,
+        Alessandro Lazzeri, Andrea Guazzini, "Modeling the overalternating
+        bias with an asymmetric entropy measure," <em>Frontiers in
+        Psychology</em>, 7:1027, 2016.
+        <a href="https://doi.org/10.3389/fpsyg.2016.01027">Open access</a>.
+        These figures describe how people <em>judge</em> sequences, not how
+        they produce them.</li>
+
+        <li id="ref-10">Stian Reimers, Chris Donkin, Mike E. Le Pelley,
+        "Perceptions of randomness in binary sequences: Normative, heuristic,
+        or both?" <em>Cognition</em>, 172, 2018, pp. 11–25.
+        <a href="https://openaccess.city.ac.uk/id/eprint/18626/">Accepted version</a>.</li>
+      </ol>
+
+      <p class="endnote">The idea and the algorithm are Aaronson's, and the
+      lineage is Hagelbarger's and Shannon's. This page is a teaching version
+      of their work, and it is not affiliated with any of them. Prior web
+      implementations exist and are credited in reference 6.</p>
     </section>
 
   </article>
@@ -88,11 +517,12 @@
 
 <script src="oracle.js"></script>
 <script src="game.js"></script>
+<script src="figures.js"></script>
 <script>
 (function () {
   'use strict';
 
-  createInstrument(document.getElementById('oracle-first'), {
+  var first = createInstrument(document.getElementById('oracle-first'), {
     id: 'first',
     label: 'Figure 1 · The oracle',
     target: 50,
@@ -116,12 +546,13 @@
       return 'The oracle predicted you ' + pct + '% of the time, which is worse ' +
         'than a coin would have done. Over ' + n + ' presses that can happen by ' +
         'luck, but it is uncommon. Scroll down to see what it was trying to do.';
-    }
+    },
+    onChange: function () { if (window.oracleFigures) window.oracleFigures.refresh(); }
   });
 
   createInstrument(document.getElementById('oracle-rematch'), {
     id: 'rematch',
-    label: 'Figure 5 · The rematch',
+    label: 'Figure 6 · The rematch',
     target: 50,
     extendTo: 0,
     prompt: 'Same machine, same rules. You now know exactly how it works.',
@@ -143,6 +574,8 @@
         'your own head.';
     }
   });
+
+  if (window.oracleFigures) window.oracleFigures.init(first);
 })();
 </script>
 </body>
