@@ -212,6 +212,39 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
   display:grid;place-items:center;padding:20px;
 }
 .figbox .empty{font-size:.875rem;color:var(--graphite);text-align:center;max-width:26rem}
+.figbox{align-content:start;justify-items:stretch}
+.fighead{font-size:.875rem;color:var(--graphite);margin-bottom:16px;line-height:1.5}
+.stepout{font-size:.9375rem;margin-top:16px}
+.fignote{font-size:.8125rem;color:var(--graphite);margin-top:16px;
+  border-left:2px solid var(--hairline);padding-left:12px}
+.fignote b{font-weight:600}
+
+/* Figure 2 — the frequency notebook */
+.freq{display:grid;grid-template-columns:auto 1fr auto;gap:7px 14px;align-items:center}
+.freq-ctx{font-family:var(--mono);font-size:.8125rem;color:var(--ink);white-space:nowrap}
+.freq-track{position:relative;display:block;height:12px;
+  background:var(--vellum);border:1px solid var(--hairline)}
+.freq-mid{position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background:var(--hairline)}
+.freq-bar{position:absolute;top:0;bottom:0;background:var(--relay);min-width:1px}
+.freq-bar.is-flat{background:var(--hairline)}
+.freq-n{font-family:var(--mono);font-size:.75rem;color:var(--graphite);
+  white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* Figure 3 — the backoff walk */
+.steps{display:flex;flex-direction:column;gap:6px}
+.step{display:grid;grid-template-columns:5.5ch 1fr;gap:14px;align-items:baseline;
+  padding:7px 10px;border:1px solid var(--hairline)}
+.step-ctx{font-family:var(--mono);font-size:.8125rem}
+.step-why{font-size:.875rem;color:var(--graphite)}
+.step.is-skip{opacity:.6}
+.step.is-use{border-color:var(--relay)}
+.step.is-use .step-why{color:var(--ink)}
+
+/* Figure 5 — accuracy over time */
+.chart{width:100%;height:auto;display:block}
+.chart-lab{font-family:var(--mono);font-size:9px;fill:var(--graphite)}
+.chart + .fighead{margin-top:14px;margin-bottom:0}
 
 /* ------------------------------------------------------- breakpoints */
 @media (max-width:47.99rem){
