@@ -2,357 +2,147 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>the oracle</title>
-<style>
-  :root{
-    --void:#0C0C0E;
-    --white:#F2F1EF;
-    --red:#C96A5E;
-    --red-hot:#E2574D;
-    --dim:#6E6E74;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html,body{height:100%}
-  body{ 
-    background:var(--void);
-    color:var(--white);
-    font-family:Archivo,system-ui,-apple-system,sans-serif;
-    overflow:hidden;
-    user-select:none;
-  }
-  #map{position:fixed;inset:0;transition:opacity 1.4s ease}
-  main{
-    position:fixed;inset:0;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:center;text-align:center;
-    pointer-events:none;
-    transition:opacity 1.4s ease;
-  }
-  #speech{
-    font-weight:700;font-size:2rem;letter-spacing:.01em;
-    min-height:2.8rem;max-width:32rem;
-    transition:opacity .9s ease;
-  }
-  #seal{
-    font-weight:300;font-size:.8rem;color:var(--dim);
-    letter-spacing:.05em;
-    margin-top:2.6rem;min-height:1.2rem;
-  }
-  #seal .chip{
-    display:inline-block;width:.55em;height:.8em;
-    background:var(--red);opacity:.7;border-radius:1px;
-    margin-right:.5em;vertical-align:-8%;
-  }
-  #seal .hit{color:var(--red-hot)}
-  #seal .miss{color:var(--white)}
-  #keys{margin-top:3.4rem;display:flex;gap:4.5rem;pointer-events:auto}
-  #keys span{
-    font-weight:700;font-size:2.6rem;color:var(--dim);cursor:pointer;
-    transition:color .15s ease,transform .15s ease;
-  }
-  #keys span.lit{color:var(--white);transform:scale(1.08)}
-  #readout{
-    position:fixed;left:0;right:0;bottom:2.2rem;text-align:center;
-    font-weight:300;font-size:.8rem;color:var(--dim);letter-spacing:.1em;
-  }
-  #acc{color:var(--red);margin-left:1.4rem}
-  #end{
-    position:fixed;inset:0;display:none;
-    flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;background:var(--void);
-    opacity:0;transition:opacity 1.6s ease;
-  }
-  #score{font-weight:700;font-size:2.2rem;letter-spacing:.02em}
-  #tell{font-weight:300;font-size:1rem;color:var(--white);margin-top:1.6rem;max-width:30rem}
-  #lore{font-weight:300;font-size:.8rem;color:var(--dim);margin-top:2.4rem;max-width:26rem;line-height:1.6}
-  #actions{margin-top:3rem;display:flex;gap:3rem}
-  #actions span{
-    font-weight:300;font-size:.85rem;color:var(--red);
-    letter-spacing:.12em;cursor:pointer;
-  }
-  #actions span:hover{color:var(--red-hot)}
-  #credit{
-    position:fixed;left:0;right:0;bottom:1.4rem;text-align:center;
-    font-weight:300;font-size:.7rem;color:var(--dim);opacity:.6;letter-spacing:.08em;
-  }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Aaronson Oracle — an interactive lesson in human predictability</title>
+<meta name="description" content="A program that guesses whether you will press F or D — before you press it — and is right far more often than chance. Play it, then find out exactly how it works.">
+<link rel="preload" href="fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="map"></canvas>
-<main id="main">
-  <div id="speech"></div>
-  <div id="seal"></div>
-  <div id="keys"><span id="keyF">F</span><span id="keyD">D</span></div>
-  <div id="readout"><span id="count"></span><span id="acc"></span></div>
+
+<a class="skip" href="#lecture">Skip to the explanation</a>
+
+<header class="masthead measure">
+  <p class="eyebrow">An interactive lesson</p>
+  <h1>The Aaronson Oracle</h1>
+  <p class="deck">A program that guesses which key you'll press next — and is
+  right far more often than chance. Play it first; the explanation is below,
+  and it will spoil the surprise.</p>
+</header>
+
+<section class="instrument" aria-label="The oracle">
+  <div class="measure">
+    <div id="oracle-first">
+      <p class="nojs">This experiment needs JavaScript. The explanation below
+      reads fine without it.</p>
+    </div>
+  </div>
+</section>
+
+<main id="lecture">
+  <article>
+
+    <section class="section measure" id="story">
+      <p class="eyebrow">The story</p>
+      <h2>Two machines in a corridor at Bell Labs</h2>
+      <p><em>Slice 4 writes this section.</em></p>
+    </section>
+
+    <section class="section measure" id="in-english">
+      <p class="eyebrow">How it works, in English</p>
+      <h2>What just happened to you</h2>
+      <p><em>Slice 4 writes this section.</em></p>
+    </section>
+
+    <section class="section measure" id="actually">
+      <p class="eyebrow">How it works, actually</p>
+      <h2>Counting, and knowing when to stop</h2>
+      <p><em>Slice 4 writes this section.</em></p>
+    </section>
+
+    <section class="section measure" id="read-the-machine">
+      <p class="eyebrow">Read the machine</p>
+      <h2>The entire program</h2>
+      <p><em>Slice 4 writes this section.</em></p>
+    </section>
+
+    <section class="section measure" id="about-us">
+      <p class="eyebrow">What it says about us</p>
+      <h2>Why you lost</h2>
+      <p><em>Slice 4 writes this section.</em></p>
+    </section>
+
+    <section class="section measure" id="rematch">
+      <p class="eyebrow">The rematch</p>
+      <h2>Now that you know</h2>
+      <p><em>Slice 4 writes this section.</em></p>
+    </section>
+
+    <section class="instrument" aria-label="The rematch">
+      <div class="measure">
+        <div id="oracle-rematch">
+          <p class="nojs">This experiment needs JavaScript.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section measure" id="references">
+      <p class="eyebrow">References</p>
+      <h2>Sources</h2>
+      <p><em>Slice 4 writes this section.</em></p>
+    </section>
+
+  </article>
 </main>
-<div id="end">
-  <div id="score"></div>
-  <div id="tell"></div>
-  <div id="lore">aaronson's program hit 70&ndash;80% against his students. one student
-    scored 50%. he said he just used his free will.</div>
-  <div id="actions"><span id="copy">copy result</span><span id="again">again</span></div>
-  <div id="credit">after scott aaronson &middot; quantum computing since democritus</div>
-</div>
+
+<script src="oracle.js"></script>
+<script src="game.js"></script>
 <script>
-(()=>{
-'use strict';
-const $=id=>document.getElementById(id);
-const speechEl=$('speech'),sealEl=$('seal'),countEl=$('count'),accEl=$('acc'),
-      mainEl=$('main'),endEl=$('end'),scoreEl=$('score'),tellEl=$('tell'),
-      copyEl=$('copy'),againEl=$('again'),cv=$('map'),g=cv.getContext('2d');
-const TOTAL=100;
+(function () {
+  'use strict';
 
-/* ---------- prediction model: 5-gram with backoff ---------- */
-const table=new Map(); // context string (length 0..4) -> {F,D}
-const bucket=c=>{let t=table.get(c);if(!t){t={F:0,D:0};table.set(c,t)}return t};
-function predict(h){
-  for(let n=Math.min(4,h.length);n>=0;n--){
-    const t=table.get(h.slice(h.length-n).join(''));
-    if(t&&t.F!==t.D)return t.F>t.D?'F':'D';
-  }
-  return Math.random()<.5?'F':'D';
-}
-function learn(h,key){
-  for(let n=0;n<=Math.min(4,h.length);n++)
-    bucket(h.slice(h.length-n).join(''))[key]++;
-}
-
-/* ---------- map: 16 context nodes, real edges only ---------- */
-const CTXS=[];
-for(let i=0;i<16;i++)
-  CTXS.push([3,2,1,0].map(b=>(i>>b)&1?'D':'F').join(''));
-const nodes=CTXS.map((label,i)=>({label,bx:0,by:0,x:0,y:0,phase:i*2.39,visits:0,born:0}));
-const nodeByCtx={};nodes.forEach(n=>nodeByCtx[n.label]=n);
-const edges=new Map(); // "AAAA>BBBB" -> count
-const pulses=[];
-const PULSE_MS=600;
-const DRIFT=2.1e-4;
-
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-
-function layout(){
-  // jittered grid: 2 cols x 4 rows per side band, center column kept clear
-  const w=innerWidth,h=innerHeight;
-  const m=Math.max(60,w*.05),cc=Math.min(260,w*.24);
-  const rnd=mulberry32(7);
-  const cells=[];
-  for(const [x0,x1] of [[m,w/2-cc],[w/2+cc,w-m]]){
-    const cw=(x1-x0)/2,ch=(h-2*m)/4;
-    for(let r=0;r<4;r++)for(let c=0;c<2;c++)
-      cells.push({x:x0+cw*(c+.5),y:m+ch*(r+.5),jx:cw*.5,jy:ch*.5});
-  }
-  const order=cells.map((_,i)=>i);
-  for(let i=order.length-1;i>0;i--){
-    const j=Math.floor(rnd()*(i+1));
-    [order[i],order[j]]=[order[j],order[i]];
-  }
-  nodes.forEach((n,i)=>{
-    const cell=cells[order[i]];
-    n.bx=cell.x+(rnd()-.5)*cell.jx;
-    n.by=cell.y+(rnd()-.5)*cell.jy;
-  });
-}
-function resize(){
-  const dpr=devicePixelRatio||1;
-  cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;
-  g.setTransform(dpr,0,0,dpr,0,0);
-  layout();
-}
-addEventListener('resize',resize);
-resize();
-
-function draw(now){
-  requestAnimationFrame(draw);
-  g.clearRect(0,0,innerWidth,innerHeight);
-  for(const n of nodes){
-    n.x=n.bx+Math.sin(now*DRIFT+n.phase)*12;
-    n.y=n.by+Math.cos(now*DRIFT*.8+n.phase*1.7)*9;
-  }
-  const cur=(!done&&hist.length>=4)?hist.slice(-4).join(''):null;
-  // edges: only transitions actually made
-  for(const [k,c] of edges){
-    const i=k.indexOf('>');
-    const a=nodeByCtx[k.slice(0,i)],b=nodeByCtx[k.slice(i+1)];
-    g.strokeStyle=`rgba(210,214,220,${Math.min(.14+(c-1)*.03,.38)})`;
-    g.lineWidth=Math.min(.6+(c-1)*.18,2.2);
-    g.beginPath();
-    if(a===b)g.arc(a.x,a.y,10,0,2*Math.PI);
-    else{g.moveTo(a.x,a.y);g.lineTo(b.x,b.y)}
-    g.stroke();
-  }
-  // pulse traveling the edge just taken
-  for(let i=pulses.length-1;i>=0;i--){
-    const pl=pulses[i],p=(now-pl.t0)/PULSE_MS;
-    if(p>=1){pulses.splice(i,1);continue}
-    const q=1-Math.pow(1-p,3),alpha=.9*Math.pow(1-p,1.6); // fast start, slow fade
-    let x,y;
-    if(pl.a===pl.b){
-      const ang=-Math.PI/2+q*2*Math.PI;
-      x=pl.a.x+Math.cos(ang)*10;y=pl.a.y+Math.sin(ang)*10;
-    }else{
-      x=pl.a.x+(pl.b.x-pl.a.x)*q;y=pl.a.y+(pl.b.y-pl.a.y)*q;
+  createInstrument(document.getElementById('oracle-first'), {
+    id: 'first',
+    label: 'Figure 1 · The oracle',
+    target: 50,
+    extendTo: 100,
+    prompt: 'Press F or D. Try to be unpredictable.',
+    believe: 'The guess is sealed <strong>before</strong> you press, and it is ' +
+      'really in the page while you decide — the plate carries it as ' +
+      '<code>data-sealed</code>. Open your browser\'s inspector and read it ' +
+      'before you choose. The predictor is printed in full further down; it ' +
+      'is short enough to check yourself.',
+    summary: function (pct, hit, n) {
+      if (pct >= 60) {
+        return 'The oracle predicted you ' + pct + '% of the time. A coin would ' +
+          'have managed 50%. Scroll down to find out what it saw.';
+      }
+      if (pct >= 50) {
+        return 'The oracle predicted you ' + pct + '% of the time — barely better ' +
+          'than a coin. That is a good result. Scroll down to find out what it ' +
+          'was looking for, and why most people do worse.';
+      }
+      return 'The oracle predicted you ' + pct + '% of the time, which is worse ' +
+        'than a coin would have done. Over ' + n + ' presses that can happen by ' +
+        'luck, but it is uncommon. Scroll down to see what it was trying to do.';
     }
-    g.fillStyle=`rgba(226,87,77,${alpha})`;
-    g.beginPath();g.arc(x,y,2.4,0,2*Math.PI);g.fill();
-  }
-  // node labels: visible only once visited; current context glows
-  g.font='11px Archivo, system-ui, sans-serif';
-  g.textAlign='center';g.textBaseline='middle';
-  for(const n of nodes){
-    const isCur=n.label===cur;
-    if(!n.visits&&!isCur)continue;
-    let a=isCur?.95:Math.min(.12+n.visits*.055,.8);
-    a*=Math.min(1,(now-n.born)/200); // 200ms fade-in on first appearance
-    g.fillStyle=isCur?`rgba(226,87,77,${a})`:`rgba(201,106,94,${a})`;
-    if(isCur){g.shadowColor='rgba(226,87,77,.8)';g.shadowBlur=10}
-    g.fillText(n.label,n.x,n.y);
-    g.shadowBlur=0;
-  }
-}
-requestAnimationFrame(draw);
+  });
 
-/* ---------- session state ---------- */
-let hist=[],presses=0,correct=0,streak=0,done=false,sealed=null;
-let remarks=0,lastRemark=-99;
-const fired=new Set();
-
-/* ---------- machine speech ---------- */
-let fadeT=null;
-function say(line,fadeMs){
-  clearTimeout(fadeT);
-  speechEl.style.opacity=0;
-  setTimeout(()=>{
-    speechEl.textContent=line;
-    speechEl.style.opacity=1;
-    if(fadeMs)fadeT=setTimeout(()=>speechEl.style.opacity=0,fadeMs);
-  },400);
-}
-function tryRemark(id,line){
-  if(fired.has(id)||remarks>=6||presses-lastRemark<5)return;
-  fired.add(id);remarks++;lastRemark=presses;
-  say(line,5000);
-}
-function altRate(a){
-  if(a.length<2)return 0;
-  let s=0;for(let i=1;i<a.length;i++)if(a[i]!==a[i-1])s++;
-  return s/(a.length-1);
-}
-
-/* ---------- press flow ---------- */
-let sealTimer=null;
-function flash(key){
-  const el=$('key'+key);
-  el.classList.add('lit');
-  setTimeout(()=>el.classList.remove('lit'),150);
-}
-function press(key){
-  if(done)return;
-  flash(key);
-  const guess=sealed;              // committed before this press
-  const hit=guess===key;
-  if(hit){correct++;streak++}else streak=0;
-  learn(hist,key);
-  const prev=hist.length>=4?hist.slice(-4).join(''):null;
-  hist.push(key);presses++;
-  const cur=hist.length>=4?hist.slice(-4).join(''):null;
-  if(cur){
-    const n=nodeByCtx[cur];
-    if(n.visits===0)n.born=performance.now();
-    n.visits++;
-  }
-  if(prev&&cur){
-    const k=prev+'>'+cur;
-    edges.set(k,(edges.get(k)||0)+1);
-    pulses.push({a:nodeByCtx[prev],b:nodeByCtx[cur],t0:performance.now()});
-  }
-  sealed=predict(hist);            // commit for the NEXT press, before it happens
-  // readout: numbers only from act 2 on; accuracy only in act 3
-  if(presses>=15)countEl.textContent=presses+' / '+TOTAL;
-  if(presses>=30)accEl.textContent=Math.round(100*correct/presses)+'%';
-  // sealed guess: act 2 onward
-  if(presses+1>=16){
-    if(presses>=16)
-      sealEl.innerHTML=hit
-        ?'<span class="hit">✓</span> it guessed '+guess+' — hit'
-        :'<span class="miss">✗</span> it guessed '+guess+' — miss';
-    clearTimeout(sealTimer);
-    sealTimer=setTimeout(()=>{
-      if(!done)sealEl.innerHTML='<span class="chip"></span>prediction sealed';
-    },700);
-  }
-  // speech
-  if(presses===10)say('keep going.',4000);
-  if(presses>=31){
-    if(streak===8)tryRemark('s8','that was a pattern too.');
-    else if(streak===5)tryRemark('s5','you alternate when you get nervous.');
-    else if(presses>=50&&correct/presses<.45)tryRemark('hard',"you're harder than most.");
-    else if(presses>=46&&!fired.has('shift')&&
-      Math.abs(altRate(hist.slice(-15))-altRate(hist.slice(-30,-15)))>.4)
-      tryRemark('shift','trying something new. noted.');
-  }
-  if(presses>=TOTAL)finish();
-}
-addEventListener('keydown',e=>{
-  if(e.repeat)return;
-  const k=e.key.toLowerCase();
-  if(k==='f')press('F');else if(k==='d')press('D');
-});
-$('keyF').addEventListener('click',()=>press('F'));
-$('keyD').addEventListener('click',()=>press('D'));
-
-/* ---------- ending ---------- */
-function observation(){
-  const alt=altRate(hist);
-  let run=1,best=1;
-  for(let i=1;i<hist.length;i++){run=hist[i]===hist[i-1]?run+1:1;if(run>best)best=run}
-  if(alt>.6)return'your tell: you alternate. '+Math.round(alt*100)+'% of your presses switched keys.';
-  if(best<=3)return'your tell: you never pressed the same key four times.';
-  let bc=null,bp=0,bk='';
-  for(const c of CTXS){
-    const t=table.get(c);if(!t)continue;
-    const tot=t.F+t.D;if(tot<6)continue;
-    const p=Math.max(t.F,t.D)/tot;
-    if(p>bp){bp=p;bc=c;bk=t.F>=t.D?'F':'D'}
-  }
-  if(bc&&bp>.65)return'your tell: after '+bc+' you pressed '+bk+' '+Math.round(bp*100)+'% of the time.';
-  return'your longest run of one key: '+best+'.';
-}
-function finish(){
-  done=true;
-  clearTimeout(sealTimer);
-  scoreEl.textContent='FREE WILL SCORE: '+(100-correct)+'%';
-  tellEl.textContent=observation();
-  mainEl.style.opacity=0;cv.style.opacity=0;
-  setTimeout(()=>{
-    endEl.style.display='flex';
-    requestAnimationFrame(()=>endEl.style.opacity=1);
-  },900);
-}
-copyEl.addEventListener('click',()=>{
-  const url=location.protocol.startsWith('http')?' '+location.href:'';
-  navigator.clipboard.writeText(
-    'The machine predicted my keypresses '+correct+'% of the time.\n'+
-    'Free Will Score: '+(100-correct)+'%. Can you be random?'+url
-  ).then(()=>{copyEl.textContent='copied'});
-});
-againEl.addEventListener('click',()=>{
-  // round two: the learned table (and the map it built) persists
-  hist=[];presses=0;correct=0;streak=0;done=false;
-  remarks=0;lastRemark=-99;fired.clear();
-  sealed=predict(hist);
-  sealEl.innerHTML='';countEl.textContent='';accEl.textContent='';
-  copyEl.textContent='copy result';
-  endEl.style.opacity=0;
-  setTimeout(()=>{
-    endEl.style.display='none';
-    mainEl.style.opacity=1;cv.style.opacity=1;
-  },700);
-  say("press F or D. randomly. that's all.");
-});
-
-/* ---------- open ---------- */
-sealed=predict(hist);
-say("press F or D. randomly. that's all.");
+  createInstrument(document.getElementById('oracle-rematch'), {
+    id: 'rematch',
+    label: 'Figure 5 · The rematch',
+    target: 50,
+    extendTo: 0,
+    prompt: 'Same machine, same rules. You now know exactly how it works.',
+    believe: 'Same predictor, same file, same sealed-before-you-press rule. ' +
+      'Nothing about the machine has changed. The only thing that changed is ' +
+      'that you know how it works.',
+    summary: function (pct, hit, n) {
+      if (pct >= 55) {
+        return 'Knowing the algorithm did not save you. That is the finding, and ' +
+          'it is the same one Aaronson reported about himself.';
+      }
+      if (pct >= 45) {
+        return 'You held it near chance. Worth asking honestly: did you find a ' +
+          'source of randomness outside your own head — a rhythm, a rule, ' +
+          'something you were reading off? That is how it is usually done.';
+      }
+      return 'You beat it, and comfortably. Worth asking honestly what you used, ' +
+        'because the reliable methods all amount to taking the decision out of ' +
+        'your own head.';
+    }
+  });
 })();
 </script>
 </body>
