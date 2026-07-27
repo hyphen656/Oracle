@@ -35,8 +35,13 @@ radiating out from it:
 1. **The instrument** — the game, at the top. A visitor plays before
    reading anything. The "it predicted me" moment must land unspoiled.
 2. **The lecture** — scrolling past the game opens the educational layer:
-   - *The story*: Aaronson's classroom demonstration, the 70–80% result,
-     the student who beat it, and where our version departs from his.
+   - *The story*: the seventy-year lineage as one narrative — Shannon's
+     mind-reading machine and Hagelbarger's SEER at Bell Labs, the two
+     machines playing each other, and then Aaronson picking the idea up
+     for a lecture hall fifty years later: the classroom demonstration,
+     the 70–80% result, the student who beat it, and where our version
+     departs from his. The history frames the experiment rather than
+     trailing it.
    - *How it works, in English*: no notation. "It remembers your last few
      presses and checks what you did next the last time this happened."
      Walk the reader down the exact path from their presses to a
@@ -54,10 +59,13 @@ radiating out from it:
      explicitly — a few dozen lines of counting beat human intuition
      because people are systematically bad at behaving randomly. Grounded
      in the human-randomness literature, not pop-psych hand-waving.
-   - *The bigger picture*: the research lineage — Shannon's mind-reading
-     machine, Hagelbarger's SEER, the literature on humans generating
-     random sequences. Aaronson's oracle situated in its history.
    - *References*: every claim traces to a real, linked source.
+3. **The rematch** — the lecture ends by handing the instrument back.
+   Now that the reader knows exactly how the machine works, they play
+   again. Most people still lose. That result — not a citation — is the
+   proof of the human-randomness thesis, and it is the page's ending.
+   The rematch is honest about what it is: same predictor, same rules,
+   the reader's own second score set beside their first.
 
 ## The game (the centerpiece)
 
@@ -66,9 +74,14 @@ radiating out from it:
 - **The sealed prediction is the centerpiece of the interface.** The
   machine visibly, unmistakably commits its guess before every press,
   then reveals it after. The whole UI choreographs commit → press →
-  reveal. It must never feel arbitrary or decorative — it is the proof
-  the machine isn't cheating, and the site should make sure the player
-  understands that.
+  reveal. It must never feel arbitrary or decorative.
+- **The seal is choreography, not proof.** A card that flips over after
+  the press cannot, by itself, convince a reader who has no way to
+  inspect the page. So the credibility claim is carried in plain words:
+  a short "why you should believe this" note that says the predictor is
+  a few dozen lines, that those exact lines are printed further down the
+  page, and why that leaves no room for it to be faking. Never lean on
+  devtools-verifiability for an audience that doesn't open devtools.
 - **Never fake the seal.** The prediction is computed and committed
   before the keypress, always. Render only real state — everything
   visible reflects the actual model.
@@ -100,7 +113,10 @@ instrument within that page, not a séance.
 - Multiple plain files allowed (HTML/CSS/JS, real fonts allowed), but
   **no framework, no npm, no build step**. Open it in a browser or host
   it on any static host — that's the whole deployment story.
-- Desktop keyboard remains the primary input for the game.
+- Keyboard is the primary input on desktop, but the experiment needs a
+  binary choice, not a keyboard: touch is fully supported. The whole
+  site — instrument, lecture, figures — works on a phone. A teacher must
+  be able to assign it to students who will open it on their phones.
 - Every historical and scientific claim on the site must be verifiable
   against a linked source.
 
@@ -116,6 +132,10 @@ instrument within that page, not a séance.
 5. **The code keeps its promise.** A reader who opens the "read the
    machine" section finds code short and simple enough to believe, and
    it matches what the page actually runs.
+6. **The rematch lands.** A reader who now knows the algorithm plays
+   again and — usually — still loses, and the page names that result
+   plainly as the lesson rather than as a gotcha.
+7. **It works on a phone.** Every part of the site, experiment included.
 
 ## Development plan — slice by slice
 
@@ -131,21 +151,47 @@ the next begins.
    layout, and above all the commit → press → reveal choreography.
    Output: agreed look before any rebuild.
 3. **Rebuild the instrument** — the game in the new design, seal as
-   centerpiece, neutral copy, 100-press session and score reframed
-   educationally. Write the predictor as a small, self-contained,
+   centerpiece, neutral copy, session and score reframed educationally,
+   keyboard and touch. Built as a reusable component, because the page
+   mounts it twice. Write the predictor as a small, self-contained,
    readable module from the start — it will be displayed on the page
    verbatim in slice 4.
-4. **Write the lecture** — story, plain-English explanation, the real
-   math, the annotated source code ("read the machine"), the psychology
-   takeaway, the lineage. All claims cited from the dossier.
+4. **Write the lecture** — story (lineage first, then Aaronson), the
+   plain-English explanation, the real math, the annotated source code
+   ("read the machine"), the psychology takeaway, and the rematch that
+   closes it. All claims cited from the dossier.
 5. **Interactive figures** — where a figure teaches better than prose
    (e.g. the reader's own frequency table from their session), add it.
 6. **Polish and publish** — naming finalized, references section, static
    hosting, and a final pass against the acceptance test.
 
+## Decided (see DOCTRINE.md for the execution plan)
+
+- The machine is **mostly silent** during play: real state only (seal,
+  press, reveal, running score); prose appears only at session end.
+- **Fully static, forever.** No backend of any kind.
+- Hosting: developed on GitHub, deployed to **Vercel** as a static site
+  at publish time.
+
 ## Open questions (decide in the relevant slice, not before)
 
-- Does the machine have any voice during play, or is it a silent
-  instrument? (Game slice.)
 - Exact final name. (Design/publish slices.)
 - Whether to reach out to Aaronson before publicizing. (Publish slice.)
+- **Session persistence.** The lecture wires prose and figures to the
+  reader's own presses; a refresh currently erases all of it. Storing one
+  session in `localStorage` is not a backend and not an account. Decide
+  in slice 2, before the figures are designed around data that may not
+  survive a scroll.
+- **Session length.** 100 presses is a long ask before any payoff on a
+  page (Aaronson's demo was live and social; ours isn't). A shorter first
+  session with an optional extension to 100 may serve both the "aha" and
+  the statistics. Decide in slice 2.
+- **The score itself.** "Free will score" is retired but nothing has
+  replaced it. Candidates: accuracy set against both baselines (chance
+  50%, Aaronson's students 70–80%), or the entropy of the reader's
+  sequence in bits per press against a ceiling of 1.0 — the actual
+  scientific quantity, and teachable. Decide in slice 2 or 3.
+- **The scroll spoiler.** A reader who scrolls mid-session and reads
+  "it remembers your last few presses" has destroyed their own first
+  result. Gate, discourage by layout, or knowingly accept. Decide in
+  slice 2.
