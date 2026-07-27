@@ -342,8 +342,10 @@ concrete numbers — but for **judgment**, not generation:
   types compared to the normative criterion employed."
 - Stian Reimers, Chris Donkin, Mike E. Le Pelley, "Perceptions of
   randomness in binary sequences: Normative, heuristic, or both?"
-  *Cognition*, 172, 2018, pp. 11–25. DOI: 10.1016/j.cognition.2017.11.002.
-  Open accepted version: https://openaccess.city.ac.uk/id/eprint/18626/
+  *Cognition*, 172, 2018, pp. 11–25. DOI: 10.1016/j.cognition.2017.11.002
+  (https://doi.org/10.1016/j.cognition.2017.11.002). Open accepted version,
+  linked directly because the repository's landing page is unreliable:
+  https://openaccess.city.ac.uk/id/eprint/18626/1/Coin%20Tossing%20R3%20Clean.pdf
   People "erroneously rate sequences with less internal structure or order
   (such as HTTHT) as more probable than sequences containing more structure
   or order (such as HHHHH)."

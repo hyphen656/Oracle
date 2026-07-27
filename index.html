@@ -5,6 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Aaronson Oracle — an interactive lesson in human predictability</title>
 <meta name="description" content="A program that guesses whether you will press F or D — before you press it — and is right far more often than chance. Play it, then find out exactly how it works.">
+<meta name="author" content="Spencer Stanton">
+
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<!-- Social preview. og:image must be an absolute URL for most platforms;
+     set it to the deployed origin when the site gets a domain. -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Aaronson Oracle">
+<meta property="og:description" content="A program that guesses which key you'll press next — and is right far more often than chance. Play it, then read exactly how it works.">
+<meta property="og:image" content="og-card.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Aaronson Oracle">
+<meta name="twitter:description" content="A program that guesses which key you'll press next — and is right far more often than chance.">
+<meta name="twitter:image" content="og-card.png">
+
 <link rel="preload" href="fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
@@ -299,7 +314,12 @@
       long, and its shortness is the lesson: this is all it takes.</p>
 
       <figure class="wide" id="fig-source">
-        <pre class="codeblock" id="oracle-source" tabindex="0"><code>Loading the source…</code></pre>
+        <pre class="codeblock" id="oracle-source" tabindex="0"><code>Loading oracle.js…</code></pre>
+        <noscript>
+          <p class="fignote">JavaScript is off, so the listing cannot be
+          inserted here. The file itself is <a href="oracle.js">oracle.js</a>,
+          and it is the whole predictor.</p>
+        </noscript>
         <figcaption><b>Figure 4</b><span id="oracle-source-note">The predictor,
         loaded from <code>oracle.js</code> — the same file this page is
         running.</span></figcaption>
@@ -503,7 +523,8 @@
         <li id="ref-10">Stian Reimers, Chris Donkin, Mike E. Le Pelley,
         "Perceptions of randomness in binary sequences: Normative, heuristic,
         or both?" <em>Cognition</em>, 172, 2018, pp. 11–25.
-        <a href="https://openaccess.city.ac.uk/id/eprint/18626/">Accepted version</a>.</li>
+        <a href="https://doi.org/10.1016/j.cognition.2017.11.002">DOI</a> ·
+        <a href="https://openaccess.city.ac.uk/id/eprint/18626/1/Coin%20Tossing%20R3%20Clean.pdf">accepted version (PDF)</a>.</li>
       </ol>
 
       <p class="endnote">The idea and the algorithm are Aaronson's, and the

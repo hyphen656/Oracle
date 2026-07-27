@@ -296,12 +296,18 @@ layout shift when a session loads from `localStorage`.
 
 ## 10. The sketch
 
-`sketch.html` in the repo root is the slice 2 sketch — the instrument plus
-one lecture spread, used to judge this direction before committing to it.
-Open it in a browser and play it; append `#demo` for a 32-press state or
-`#demo-open` to freeze a revealed seal.
+`sketch.html` was the slice 2 sketch — the instrument plus one lecture
+spread, used to judge this direction before committing to it. Its predictor
+was real rather than a mock, because a faked seal would have misjudged the
+exact thing being designed.
 
-**It is throwaway and gets deleted in slice 3.** Its predictor is real, not
-a mock — a faked seal would have misjudged the exact thing being designed —
-but it is not the module the site will ship. Fonts are referenced relatively
-from `fonts/`, so it works from any checkout.
+**It was deleted in slice 6**, once the real page had superseded every part
+of it. It survives in the history at commit `e456415` if the direction ever
+needs re-litigating.
+
+`verify-seal.html` is not a sketch and stays. It is a standalone page that
+presses the instrument 400 times with no delay, half the presses chosen
+adversarially against whatever is committed, and reports any mismatch
+between what was in the DOM before a press and what was scored after it.
+It is the proof behind the credibility note, and it is worth being able to
+re-run.
