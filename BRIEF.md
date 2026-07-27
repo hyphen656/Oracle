@@ -1,5 +1,8 @@
 # THE ORACLE — vertical slice brief
 
+> **SUPERSEDED.** This brief governed the original vertical slice and is
+> kept as history. The project contract is now MISSION.md.
+
 A single-page experiment: the machine predicts whether you'll press F or D
 before you press it. Based on Scott Aaronson's classroom oracle
 (Quantum Computing Since Democritus). No backend, no framework, no build step.
