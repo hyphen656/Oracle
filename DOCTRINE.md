@@ -54,7 +54,7 @@ DESIGN.md       — the agreed design spec (slice 2)
 
 ---
 
-## Slice 1 — Research dossier  ◀ NEXT UP
+## Slice 1 — Research dossier
 
 **Goal:** a sources file the entire lecture can be written from. Nothing
 enters the site that isn't in the dossier.
@@ -265,9 +265,61 @@ static content without JS errors if data is absent.
 
 ---
 
+## Slice 7 — Width, imagery, dark theme
+
+**Goal:** the finished lecture was correct and unread-looking: a 34rem
+column down the middle of a wide screen, no images anywhere, and the
+`#story` section running 143 lines with nothing to break it. Give the page
+the width and the visual punctuation of a real article without widening
+the prose past what is readable.
+
+**Steps:**
+1. **The editorial grid.** One `.spread` grid of five tracks: gutter, rail,
+   text, rail, gutter. Prose stays in the text column at 38rem; figures
+   take `wide`, bands take `full`, short asides take a rail. The rails
+   collapse below 64rem so the phone layout is unchanged.
+2. **Dark theme.** A second set of the design tokens, `prefers-color-scheme`
+   plus a `data-theme` override so an explicit choice wins in both
+   directions, resolved in the head before first paint.
+3. **Imagery.** Licensed photographs committed under `img/`, plus drawn SVG
+   plates in the existing hairline language for everything no usable
+   photograph exists for.
+4. **Quote bands.** The five historical quotations become full-bleed bands,
+   with a portrait where one exists. These carry the page's rhythm.
+5. **A footer**, which the site did not have; the endnote was doing footer
+   duty inside the references section.
+6. **No em-dashes** in any prose we wrote. Quotations are left exactly as
+   the sources have them, em-dashes included; altering a quotation to suit
+   a house style would break "truth in writing" to fix a typographic
+   preference.
+7. Amend MISSION.md, DESIGN.md and this file, and record every photograph's
+   licence and provenance in DOSSIER.md.
+
+**Two traps worth writing down, both cost a debugging cycle:**
+
+- Grid items default to `min-width:auto`, so the code block and the
+  comparison table pushed their own tracks wider than the viewport and
+  scrolled the whole page sideways. `.spread > *{min-width:0}`.
+- `figure{margin:40px auto}` opts a figure out of grid stretch and sizes it
+  shrink-to-fit, which reintroduces exactly the same overflow even with
+  `min-width:0` set. Use `margin-block` only and let the grid centre it.
+
+**Done when:** `document.scrollWidth === clientWidth` at 390, 768, 1024 and
+1440; every figure renders in both themes, Figure 5's chart included;
+`verify-seal.html` still reports zero mismatches over 400 presses; and
+`grep -c '—'` over `index.html` returns only the count inside quotations.
+
+---
+
 ## Explicitly out of scope (entire project)
 
 - Any backend, database, serverless function, or third-party analytics.
 - Accounts, persistence beyond the in-memory session, leaderboards.
-- Dark theme (academic light only, per mission).
 - Frameworks, npm, build tooling of any kind.
+- Scroll-triggered animation, parallax, ambient motion. The seal is the
+  only thing on the page that moves, and that has not changed.
+- Hotlinked assets. Every image, like every font, is a file in the repo.
+
+**Dark theme was here until slice 7**, when the mission was amended to
+allow it. It is now built: one set of tokens per theme, browser default
+plus a toggle.

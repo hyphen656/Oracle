@@ -99,6 +99,24 @@ strong typography, figures with captions (in the spirit of distill.pub /
 explorable explanations). The game is rendered as a clear scientific
 instrument within that page, not a séance.
 
+**Amended, slice 7.** Two things the original direction ruled out are now
+in scope, because a long read that never changes shape does not get read:
+
+- **Dark theme.** The page follows the reader's browser setting and offers
+  a toggle. Academic light is still the page's identity and the design of
+  record; dark is the same drawing on a dark ground, not a second design.
+- **Imagery.** Photographs and drawn plates, to break up the lecture and
+  give the history faces and objects. Two rules, both downstream of "no
+  claim without a source": every photograph must be a locally committed
+  file under a licence we can name, credited on the page, with its
+  provenance recorded in the dossier; and a caption must say what the
+  picture actually is. Where no usable photograph of a thing exists, it is
+  drawn or described, never substituted for with something that merely
+  looks right.
+
+The prohibition on motion stands. There is no scroll animation anywhere;
+the seal is still the only moving thing on the page.
+
 ## Attribution commitments
 
 - Prominent credit: a dedicated history section telling Aaronson's story,

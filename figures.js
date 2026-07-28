@@ -1,5 +1,5 @@
 /*
- * figures.js — the numbered figures, and the source listing.
+ * figures.js: the numbered figures, and the source listing.
  *
  * Every figure renders real state. With a session stored it is yours;
  * without one, the same real predictor is run over a sample sequence and
@@ -168,8 +168,8 @@
 
       var why, state;
       if (!seen) { why = 'never seen before'; state = 'skip'; }
-      else if (total < known.minEvidence) { why = 'seen once — not evidence'; state = 'skip'; }
-      else if (seen.F === seen.D) { why = 'split ' + seen.F + '–' + seen.D + ' — no opinion'; state = 'skip'; }
+      else if (total < known.minEvidence) { why = 'seen once, not evidence'; state = 'skip'; }
+      else if (seen.F === seen.D) { why = 'split ' + seen.F + '–' + seen.D + ', no opinion'; state = 'skip'; }
       else {
         why = 'seen ' + total + ' times · ' + seen.F + 'F ' + seen.D + 'D → ' +
               (seen.F > seen.D ? 'F' : 'D');
@@ -222,20 +222,21 @@
     var x = function (i) { return PAD + (i / (hits.length - 1)) * (W - PAD * 2); };
     var y = function (v) { return H - PAD - v * (H - PAD * 2); };
 
+    // Colour lives in style.css, not here, so the chart follows the theme
+    // the instant it changes and never needs redrawing.
     s.append(svg('line', { x1: PAD, y1: y(0.5), x2: W - PAD, y2: y(0.5),
-      stroke: '#C8CCC6', 'stroke-width': 1, 'stroke-dasharray': '3 3' }));
+      class: 'chart-base' }));
 
     var d = running.map(function (v, i) {
       return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1);
     }).join(' ');
-    s.append(svg('path', { d: d, fill: 'none', stroke: '#1B4D8F', 'stroke-width': 1.75 }));
+    s.append(svg('path', { d: d, class: 'chart-line' }));
 
-    // the tally, along the bottom — same language as the instrument
+    // the tally, along the bottom: same language as the instrument
     hits.forEach(function (h, i) {
       s.append(svg('rect', {
         x: (x(i) - 2.5).toFixed(1), y: H - 13, width: 5, height: 5,
-        fill: h ? '#C4442A' : 'none', stroke: h ? '#C4442A' : '#C8CCC6',
-        'stroke-width': 1
+        class: h ? 'chart-pip is-hit' : 'chart-pip'
       }));
     });
 
@@ -249,7 +250,7 @@
     var cap = el('p', 'fighead');
     cap.innerHTML = 'Final accuracy <b>' +
       Math.round(100 * running[running.length - 1]) + '%</b> over ' +
-      hits.length + ' presses. Early swings are noise — a handful of presses ' +
+      hits.length + ' presses. Early swings are noise: a handful of presses ' +
       'cannot tell you much. The line settles as the notebook fills.';
     box.append(cap);
     if (data.isSample) sampleNote(box);
@@ -259,7 +260,7 @@
   // The promise on the page is that the code shown is the code running.
   // Fetching oracle.js keeps that literally true. Opened straight from
   // disk, though, browsers refuse to fetch a sibling file, so we fall
-  // back to asking the running function for its own source text — still
+  // back to asking the running function for its own source text, still
   // the real thing, just without the file's header comment.
   function showSource() {
     var pre = document.getElementById('oracle-source');
@@ -286,9 +287,9 @@
           ? 'The predictor, read back from the function this page is running. ' +
             'Your browser blocks reading sibling files when a page is opened ' +
             'directly from disk, so this is the function\'s own source text ' +
-            'rather than the whole file — the same code, without the header ' +
+            'rather than the whole file, the same code, without the header ' +
             'comment. Served over http it is fetched from <code>oracle.js</code>.'
-          : 'The predictor, fetched from <code>oracle.js</code> — the same file ' +
+          : 'The predictor, fetched from <code>oracle.js</code>, the same file ' +
             'this page loaded and ran while you were playing.';
       }
     }

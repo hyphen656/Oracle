@@ -1,4 +1,4 @@
-/* The Aaronson Oracle — the design system described in DESIGN.md. */
+/* The Aaronson Oracle: the design system described in DESIGN.md. */
 
 @font-face{font-family:'Source Serif 4';src:url('fonts/source-serif-4-var.woff2') format('woff2');
   font-weight:200 900;font-style:normal;font-display:swap}
@@ -12,18 +12,55 @@
   font-weight:600;font-style:normal;font-display:swap}
 
 :root{
+  color-scheme:light dark;
+
+  /* the six values of DESIGN.md section 2, light theme */
   --vellum:#F4F5F2;
   --ink:#14161A;
   --graphite:#5C6068;
   --hairline:#C8CCC6;
   --relay:#1B4D8F;
   --filament:#C4442A;
+  /* ground for full-bleed bands; the only value not in the original six */
+  --band:#E9EBE6;
+  --hatch:rgba(200,204,198,.55);   /* the seal cover, DESIGN.md section 5 */
+  --photo-filter:none;
 
-  --measure:34rem;
-  --wide:48rem;
+  --measure:38rem;   /* prose, about 64 characters */
+  --rail:14rem;      /* margin column: notes, portraits, plates */
+  --wide:48rem;      /* legacy alias, still used by .wide-legacy */
 
   --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
   --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+
+/* Dark theme. --relay and --filament are lightened; at their light values
+   they disappear against a dark ground. --filament still never carries
+   text, so hit and miss stay encoded as fill versus hollow. */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --vellum:#15171B;
+    --ink:#E7E9E4;
+    --graphite:#9BA1A8;
+    --hairline:#343A41;
+    --relay:#7FAEEA;
+    --filament:#E4735C;
+    --band:#1C1F24;
+    --hatch:rgba(120,130,142,.55);
+    --photo-filter:brightness(.92) contrast(.96);
+  }
+}
+/* An explicit choice beats the browser's, in both directions. */
+:root[data-theme="dark"]{
+  --vellum:#15171B;
+  --ink:#E7E9E4;
+  --graphite:#9BA1A8;
+  --hairline:#343A41;
+  --relay:#7FAEEA;
+  --filament:#E4735C;
+  --band:#1C1F24;
+  --hatch:rgba(120,130,142,.55);
+  --photo-filter:brightness(.92) contrast(.96);
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -40,8 +77,41 @@ body{
   text-rendering:optimizeLegibility;
 }
 
+/* ------------------------------------------------- the editorial grid
+   One grid, five tracks. Children sit in the text column unless they ask
+   for more. The rails collapse to nothing below 64rem, so the phone
+   layout is the single column it always was. */
+.spread{
+  display:grid;
+  grid-template-columns:
+    [full-start] minmax(20px,1fr)
+    [wide-start] minmax(0,var(--rail))
+    [text-start] min(var(--measure),calc(100% - 40px)) [text-end]
+                 minmax(0,var(--rail))
+    [wide-end]   minmax(20px,1fr) [full-end];
+}
+/* min-width:0 is load-bearing. Grid items default to min-width:auto, so a
+   child whose min-content is wide (the <pre> code block, the comparison
+   table) would push its own track wider than the viewport and make the
+   whole page scroll sideways. With this, they shrink and scroll inside
+   their own boxes instead. */
+.spread > *{grid-column:text;min-width:0}
+.spread > .wide{grid-column:wide}
+.spread > .full{grid-column:full}
+.spread > .rail,.spread > .railnote{grid-column:wide-start / text-start}
+.spread > .rail-end{grid-column:text-end / wide-end}
+
+/* Below 64rem the rails vanish, so wide collapses onto text on its own,
+   the 20px gutters stay outside everything, and anything parked in a
+   rail falls back into the reading column. */
+@media (max-width:63.99rem){
+  :root{--rail:0rem}
+  .spread > .rail,.spread > .railnote,.spread > .rail-end{grid-column:text}
+}
+
+/* The old centred containers, kept for anything not yet on the grid. */
 .measure{max-width:var(--measure);margin-inline:auto;padding-inline:20px}
-.wide{max-width:var(--wide);margin-inline:auto;padding-inline:20px}
+.wide-legacy{max-width:var(--wide);margin-inline:auto;padding-inline:20px}
 
 .eyebrow{
   font-family:var(--mono);font-weight:500;font-size:.75rem;
@@ -57,12 +127,24 @@ a:hover{text-decoration-color:var(--relay)}
   border:1px solid var(--relay);z-index:10}
 
 /* ---------------------------------------------------------- masthead */
-.masthead{padding:64px 0 40px}
+.masthead{padding:88px 0 56px}
 .masthead h1{
-  font-weight:600;font-size:2.75rem;line-height:1.12;letter-spacing:-.02em;
-  margin:14px 0 12px;
+  font-weight:600;font-size:3.5rem;line-height:1.08;letter-spacing:-.025em;
+  margin:16px 0 16px;
 }
-.deck{font-size:1.0625rem;color:var(--graphite);max-width:30rem}
+.deck{font-size:1.1875rem;color:var(--graphite);max-width:34rem}
+
+/* -------------------------------------------------------- theme toggle */
+.themetoggle{
+  position:fixed;top:16px;right:16px;z-index:20;
+  font-family:var(--mono);font-weight:500;font-size:.6875rem;
+  text-transform:uppercase;letter-spacing:.12em;
+  color:var(--graphite);background:var(--vellum);
+  border:1px solid var(--hairline);padding:8px 12px;cursor:pointer;
+  touch-action:manipulation;
+}
+.themetoggle:hover{border-color:var(--relay);color:var(--relay)}
+.themetoggle[hidden]{display:none}
 
 /* -------------------------------------------------------- instrument */
 .instrument{border-block:1px solid var(--hairline);padding:24px 0 32px}
@@ -84,7 +166,7 @@ a:hover{text-decoration-color:var(--relay)}
 .cover{
   position:absolute;inset:0;display:grid;place-items:center;
   background:repeating-linear-gradient(45deg,transparent 0 5px,
-    rgba(200,204,198,.55) 5px 6px);
+    var(--hatch) 5px 6px);
   background-color:var(--vellum);
   transition:transform .18s cubic-bezier(.2,.7,.3,1);
 }
@@ -155,10 +237,10 @@ a:hover{text-decoration-color:var(--relay)}
   padding:32px 0}
 
 /* ----------------------------------------------------------- article */
-#lecture{padding-top:96px}
-.instrument + .section{margin-top:96px}
-.section{margin-bottom:96px}
-.section:last-child{margin-bottom:64px}
+#lecture{padding-top:128px}
+.instrument + .section{margin-top:128px}
+.section{margin-bottom:128px}
+.section:last-child{margin-bottom:80px}
 .section h2{
   font-weight:600;font-size:1.75rem;letter-spacing:-.01em;line-height:1.2;
   margin:10px 0 20px;
@@ -180,7 +262,11 @@ blockquote cite{
   text-transform:uppercase;letter-spacing:.1em;line-height:1.5;
 }
 
-figure{margin:40px auto}
+/* margin-block only. An auto inline margin would opt the figure out of
+   grid stretch and size it shrink-to-fit, so a wide child (the code
+   block, the comparison table) would push it past its own grid area and
+   scroll the whole page sideways. Grid already centres it. */
+figure{margin:40px 0}
 figcaption{font-size:.875rem;color:var(--graphite);margin-top:12px;
   line-height:1.5}
 figcaption b{font-family:var(--mono);font-weight:500;font-size:.75rem;
@@ -206,7 +292,7 @@ sup{font-size:.7em;line-height:0;vertical-align:super}
 sup a,a sup{text-decoration:none}
 a:has(sup){text-decoration:none;padding-inline:.1em}
 
-/* figure boxes hold their height before data arrives — no layout shift */
+/* figure boxes hold their height before data arrives: no layout shift */
 .figbox{
   min-height:300px;border:1px solid var(--hairline);
   display:grid;place-items:center;padding:20px;
@@ -219,7 +305,7 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
   border-left:2px solid var(--hairline);padding-left:12px}
 .fignote b{font-weight:600}
 
-/* Figure 2 — the frequency notebook */
+/* Figure 2: the frequency notebook */
 .freq{display:grid;grid-template-columns:auto 1fr auto;gap:7px 14px;align-items:center}
 .freq-ctx{font-family:var(--mono);font-size:.8125rem;color:var(--ink);white-space:nowrap}
 .freq-track{position:relative;display:block;height:12px;
@@ -231,7 +317,7 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
 .freq-n{font-family:var(--mono);font-size:.75rem;color:var(--graphite);
   white-space:nowrap;font-variant-numeric:tabular-nums}
 
-/* Figure 3 — the backoff walk */
+/* Figure 3: the backoff walk */
 .steps{display:flex;flex-direction:column;gap:6px}
 .step{display:grid;grid-template-columns:5.5ch 1fr;gap:14px;align-items:baseline;
   padding:7px 10px;border:1px solid var(--hairline)}
@@ -241,19 +327,164 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
 .step.is-use{border-color:var(--relay)}
 .step.is-use .step-why{color:var(--ink)}
 
-/* Figure 5 — accuracy over time */
+/* Figure 5: accuracy over time. Colours live here rather than in
+   figures.js so the chart follows the theme without being redrawn. */
 .chart{width:100%;height:auto;display:block}
 .chart-lab{font-family:var(--mono);font-size:9px;fill:var(--graphite)}
 .chart + .fighead{margin-top:14px;margin-bottom:0}
+.chart-base{stroke:var(--hairline);stroke-width:1;stroke-dasharray:3 3}
+.chart-line{fill:none;stroke:var(--relay);stroke-width:1.75}
+.chart-pip{fill:none;stroke:var(--hairline);stroke-width:1}
+.chart-pip.is-hit{fill:var(--filament);stroke:var(--filament)}
+
+/* ---------------------------------------------------------- imagery
+   Photographs and drawn plates. Every image declares width and height so
+   nothing shifts while it loads. Plates use currentColor throughout, so
+   they invert with the theme at no cost. */
+/* Photographs are capped by height, not width. A nearly square object
+   photo at the full wide track is 1000px tall and swallows the page. */
+.figimg{
+  display:block;max-width:100%;width:auto;height:auto;max-height:34rem;
+  margin-inline:auto;
+  border:1px solid var(--hairline);
+  filter:var(--photo-filter);
+}
+
+.plate-svg{
+  display:block;width:100%;height:auto;
+  color:var(--ink);
+}
+.plate-svg .rule{stroke:var(--hairline);stroke-width:1;fill:none}
+.plate-svg .box{stroke:var(--hairline);stroke-width:1;fill:none}
+.plate-svg .box-on{stroke:var(--relay);stroke-width:1.5;fill:none}
+.plate-svg .lab{font-family:var(--mono);font-size:11px;fill:var(--graphite);
+  text-transform:uppercase;letter-spacing:.08em}
+.plate-svg .val{font-family:var(--mono);font-size:13px;fill:var(--ink)}
+.plate-svg .val-on{font-family:var(--mono);font-size:13px;fill:var(--relay)}
+.plate-svg .hit{fill:var(--filament)}
+.plate-svg .curve{stroke:var(--relay);stroke-width:1.75;fill:none}
+.plate-svg .curve-true{stroke:var(--graphite);stroke-width:1;fill:none;
+  stroke-dasharray:3 3}
+
+/* A drawn table. Hairline rules only, no zebra fill: this is a plate in
+   the same drafting language as the SVGs, not a spreadsheet. */
+/* The table scrolls inside its own box on a phone. The page body must
+   never scroll sideways; see DESIGN.md section 7. */
+.scrollx{overflow-x:auto}
+.plate-table{
+  width:100%;min-width:34rem;border-collapse:collapse;
+  font-size:.875rem;line-height:1.5;
+}
+.plate-table th,.plate-table td{
+  border:1px solid var(--hairline);padding:11px 13px;
+  text-align:left;vertical-align:top;
+}
+.plate-table thead th{
+  font-family:var(--mono);font-weight:500;font-size:.6875rem;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--graphite);
+}
+.plate-table tbody th{
+  font-family:var(--mono);font-weight:500;font-size:.6875rem;
+  text-transform:uppercase;letter-spacing:.08em;color:var(--graphite);
+  white-space:nowrap;
+}
+.plate-table td.is-ours{color:var(--ink)}
+.plate-table thead th:last-child,.plate-table td.is-ours{
+  border-inline-color:var(--relay);
+}
+.plate-table thead th:last-child{color:var(--relay);border-top-color:var(--relay)}
+.plate-table tbody tr:last-child td.is-ours{border-bottom-color:var(--relay)}
+@media (max-width:47.99rem){
+  .plate-table{font-size:.8125rem}
+  .plate-table th,.plate-table td{padding:8px 9px}
+  .plate-table tbody th{white-space:normal}
+}
+
+/* Credit line under a photograph. Kept distinct from the caption: the
+   caption says what the picture shows, the credit says where it came
+   from and under what licence. */
+.credit{
+  display:block;font-family:var(--mono);font-size:.6875rem;
+  color:var(--graphite);letter-spacing:.04em;margin-top:8px;line-height:1.5;
+}
+.credit a{color:var(--graphite)}
+
+/* ------------------------------------------------------- quote bands
+   The historical quotations, given the width they deserve. A band is
+   bounded by hairlines and sits on --band, a single step off the page
+   ground. No shadows: this is still a drawing. */
+.quoteband{
+  background:var(--band);border-block:1px solid var(--hairline);
+  padding:80px 20px;margin:96px 0;
+}
+.qb-inner{
+  max-width:62rem;margin-inline:auto;
+  display:grid;grid-template-columns:190px 1fr;gap:44px;align-items:start;
+}
+.qb-inner.is-plain{grid-template-columns:1fr;max-width:46rem}
+.qb-portrait{
+  display:block;width:100%;height:auto;
+  border:1px solid var(--hairline);filter:var(--photo-filter);
+}
+.qb-figure{margin:0}
+.qb-figure .credit{margin-top:10px}
+.quoteband blockquote{
+  margin:0;padding:0;border-left:0;font-style:italic;font-size:1.25rem;
+  line-height:1.55;
+}
+.quoteband blockquote p{margin-bottom:.6em}
+.quoteband blockquote cite{margin-top:16px}
+.quoteband .plate-svg{max-width:190px}
+
+/* --------------------------------------------------------- rail notes
+   Short asides in the margin column. Below 64rem the rail collapses, so
+   these fall back into the flow as an indented note. */
+.railnote{
+  font-family:var(--mono);font-size:.6875rem;line-height:1.6;
+  color:var(--graphite);text-transform:uppercase;letter-spacing:.08em;
+  padding-right:28px;margin-top:6px;
+}
+.railnote b{color:var(--ink);font-weight:500}
+@media (max-width:63.99rem){
+  .railnote{
+    text-transform:none;letter-spacing:0;font-size:.8125rem;
+    padding:0 0 0 14px;border-left:2px solid var(--hairline);
+    margin:0 0 1.15em;
+  }
+}
+
+/* ------------------------------------------------------------- footer */
+.sitefoot{
+  border-top:1px solid var(--hairline);background:var(--band);
+  padding:64px 0 80px;margin-top:0;
+}
+.footgrid{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.sitefoot p + p{margin-top:1em}
+.sitefoot h2{
+  font-family:var(--mono);font-weight:500;font-size:.75rem;
+  text-transform:uppercase;letter-spacing:.14em;color:var(--graphite);
+  margin-bottom:14px;
+}
+.sitefoot p,.sitefoot li{font-size:.875rem;color:var(--graphite);
+  line-height:1.6}
+.sitefoot ul{list-style:none;margin:0}
+.sitefoot li{margin-bottom:.6em}
+@media (max-width:47.99rem){.footgrid{grid-template-columns:1fr;gap:32px}}
 
 /* ------------------------------------------------------- breakpoints */
 @media (max-width:47.99rem){
-  .masthead{padding:40px 0 32px}
-  .masthead h1{font-size:2rem}
+  .masthead{padding:48px 0 32px}
+  .masthead h1{font-size:2.125rem}
+  .deck{font-size:1.0625rem}
   #lecture{padding-top:64px}
   .instrument + .section{margin-top:64px}
   .section{margin-bottom:64px}
   .section h2{font-size:1.5rem}
+  .quoteband{padding:48px 20px;margin:64px 0}
+  .qb-inner{grid-template-columns:1fr;gap:24px}
+  .qb-figure{max-width:170px}
+  .quoteband blockquote{font-size:1.0625rem}
+  .themetoggle{top:10px;right:10px;padding:7px 10px;font-size:.625rem}
   .plate{width:140px;height:96px}
   .guess{font-size:2.5rem}
   .keys{gap:12px}

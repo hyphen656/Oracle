@@ -1,5 +1,5 @@
 /*
- * The Aaronson Oracle — the predictor.
+ * The Aaronson Oracle: the predictor.
  *
  * This is the whole machine. It is printed on the page you are reading,
  * and it is the same file the page is running: there is no second copy.
@@ -31,7 +31,7 @@ function createOracle({ maxContext = 5, minEvidence = 2 } = {}) {
       if (seen.F === seen.D) continue;                // no opinion
       return { key: seen.F > seen.D ? 'F' : 'D', context, seen };
     }
-    // Nothing to go on yet, so it is genuinely a coin flip — and it
+    // Nothing to go on yet, so it is genuinely a coin flip, and it
     // still counts against the machine's score.
     return { key: Math.random() < 0.5 ? 'F' : 'D', context: null, seen: null };
   }

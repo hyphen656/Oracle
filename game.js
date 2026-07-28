@@ -1,5 +1,5 @@
 /*
- * game.js — the instrument, as a component the page mounts twice.
+ * game.js: the instrument, as a component the page mounts twice.
  *
  * Not shown on the page. All the interesting logic is in oracle.js;
  * this file is the session, the keyboard and touch handling, and the
@@ -82,7 +82,7 @@
           hits: hits.map(function (h) { return h ? 1 : 0; }).join(''),
           target: target
         }));
-      } catch (e) { /* private browsing, quota — the session still works */ }
+      } catch (e) { /* private browsing or quota: the session still works */ }
     }
 
     function restore() {
@@ -125,7 +125,7 @@
     }
 
     // Commit the guess for the NEXT press. This runs the instant a press is
-    // scored, never on a timer — otherwise a fast player could read the
+    // scored, never on a timer, because otherwise a fast player could read the
     // revealed letter and press the opposite before the machine had
     // committed, which would make the seal a lie.
     function commit() {

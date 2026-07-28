@@ -441,3 +441,47 @@ the name "the Aaronson Oracle" himself. See section D.
 **F7. The book's page number.** We cite the free lecture notes, which carry
 the passage. We have not seen the print edition and must not invent a page
 citation for it.
+
+---
+
+# G. Images (added slice 7)
+
+Every photograph on the site is a file committed to this repository under
+`img/`, never hotlinked. Each one is listed here with its licence, author
+and source, on the same rule as every other claim: if it is not in the
+dossier, it does not ship.
+
+**G1. Scott Aaronson, portrait.** `img/scott-aaronson.jpg`
+Original: `Scott_Aaronson_retouched.jpg` on Wikimedia Commons. Photograph
+by Easy n; retouched (cropped, levels, red-eye) by Dcoetzee, 19 January
+2011. **Public domain.** Resized to 700px wide.
+https://commons.wikimedia.org/wiki/File:Scott_Aaronson_retouched.jpg
+Used beside the *Quantum Computing Since Democritus* quotation.
+
+**G2. Nimwit, c. 1953.** `img/shannon-nimwit.jpg`
+Claude Shannon's Nim-playing machine, MIT Museum, Cambridge MA.
+Photograph by Daderot. **CC0 1.0.** Resized to 1200px wide.
+https://commons.wikimedia.org/wiki/File:Nimwit_by_Claude_Shannon,_Nim-playing_machine,_c._1953,_view_1_-_MIT_Museum_-_Cambridge,_MA_-_DSC09104.jpg
+Its front panel carries two columns of lamps labelled PLAYER WINS and
+MACHINE WINS, which is why it is on this page. **It is not the
+mind-reading machine**, and the caption says so in its first clause.
+
+**G3. Theseus, 1952.** `img/shannon-theseus.jpg`
+Shannon's maze and mechanical mouse, MIT Museum, Cambridge MA.
+Photograph by Daderot, 4 August 2013. **CC0 1.0.** Resized to 1200px wide.
+https://commons.wikimedia.org/wiki/File:Theseus_Maze_by_Claude_Shannon,_1952_-_MIT_Museum_-_DSC03702.JPG
+
+**G4. What does not exist.** Searched Wikimedia Commons for a photograph
+of Shannon's mind-reading machine and of Hagelbarger's SEER. **Neither is
+available under any licence we can use.** Poundstone's blog (ref 4) carries
+a photograph of the mind-reading machine, but it is his. Both machines are
+therefore drawn or described on the page, never substituted for. If a
+usable photograph of either surfaces later, it belongs here first.
+
+**G5. Drawn plates.** The five SVG plates are original to this page and
+carry no third-party rights. Each illustrates a claim already sourced
+above: the eight situations and the ±3 counter stops from B/ref 2, the
+umpire match and its 2020 replication from ref 3, and the alternation-bias
+peak from ref 9. The alternation curve is explicitly captioned as an
+illustration of the reported peak, **not** a plot of published data, since
+we did not obtain the underlying measurements.

@@ -36,14 +36,32 @@ glance before any number explains it.
 
 Six values. Cool, not warm — engineering drawing rather than paperback.
 
-| Token | Hex | Role |
-|---|---|---|
-| `--vellum` | `#F4F5F2` | page ground; cool drafting paper |
-| `--ink` | `#14161A` | body text, headings; blue-black drafting ink |
-| `--graphite` | `#5C6068` | captions, secondary, mono labels |
-| `--hairline` | `#C8CCC6` | rules, apparatus outlines, table borders |
-| `--relay` | `#1B4D8F` | **the instrument's only colour** — sealed state, revealed prediction, links |
-| `--filament` | `#C4442A` | **machine was correct.** Nothing else, anywhere. |
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--vellum` | `#F4F5F2` | `#15171B` | page ground; cool drafting paper |
+| `--ink` | `#14161A` | `#E7E9E4` | body text, headings; blue-black drafting ink |
+| `--graphite` | `#5C6068` | `#9BA1A8` | captions, secondary, mono labels |
+| `--hairline` | `#C8CCC6` | `#343A41` | rules, apparatus outlines, table borders |
+| `--relay` | `#1B4D8F` | `#7FAEEA` | **the instrument's only colour** — sealed state, revealed prediction, links |
+| `--filament` | `#C4442A` | `#E4735C` | **machine was correct.** Nothing else, anywhere. |
+
+Two values were added in slice 7 because full-bleed bands need a ground
+and the seal cover needs a softened hairline: `--band` (`#E9EBE6` /
+`#1C1F24`) and `--hatch` (`--hairline` at 55%). Both are derived from the
+six, not new colours.
+
+**Dark is the same drawing on a dark ground, not a second design.**
+`--relay` and `--filament` are lightened because at their light values
+they vanish against `#15171B`; every other token is inverted in place.
+The theme follows `prefers-color-scheme`, and a `data-theme` attribute on
+`<html>` overrides it in both directions, resolved by a short script in
+the head before first paint so the page never flashes the wrong ground.
+
+⚠ **Colour belongs in CSS, never in JS.** Figure 5's chart originally
+hardcoded three hex values in `figures.js` and rendered invisibly in dark
+mode. It now uses `.chart-line` / `.chart-pip` / `.chart-base` classes, so
+it follows the theme live and is never redrawn. The same applies to
+`favicon.svg`, which carries its own `prefers-color-scheme` block.
 
 **Rationing `--filament` is the point.** It appears only when the oracle
 predicted you correctly. It is never used for headings, links, buttons, or
@@ -97,13 +115,37 @@ never jitters mid-session.
 
 Base unit 4px, scale: `4 8 12 16 24 32 48 64 96 128`.
 
-Three widths:
+**Superseded in slice 7 by the editorial grid.** The original three widths
+were centred containers, which left a 34rem ribbon down the middle of a
+wide screen. They are now tracks in one grid, `.spread`:
 
-| Token | Width | Holds |
+```
+[full-start] gutter [wide-start] rail [text-start] TEXT [text-end] rail [wide-end] gutter [full-end]
+   20px–1fr            0–14rem          min(38rem, 100%−40px)      0–14rem        20px–1fr
+```
+
+| Class | Track | Holds |
 |---|---|---|
-| `--measure` | 34rem | all prose |
-| `--wide` | 48rem | figures, tables, code blocks |
-| full-bleed | 100% | the instrument band only |
+| (default) | `text` | all prose, 38rem, about 64 characters |
+| `.wide` | `wide` | figures, plates, photographs, tables, code |
+| `.full` | `full` | quote bands, the instrument band |
+| `.railnote` | left rail | dates, short asides pulled from parentheticals |
+
+The prose measure went from 34rem to 38rem, and no further: the page uses
+the whole screen through the rails and the breakout tracks, not by
+stretching the text. Below 64rem the rails collapse to `0`, `wide` becomes
+`text`, rail notes fall back into the flow as indented notes, and the
+layout is the single column it always was.
+
+⚠ **Two rules the grid depends on**, each of which caused the page body to
+scroll sideways when it was missing:
+
+- `.spread > *{min-width:0}`. Grid items default to `min-width:auto`, so a
+  child with wide min-content (the `<pre>`, the comparison table) grows its
+  own track past the viewport.
+- Figures must use `margin-block` only. An auto inline margin opts the box
+  out of grid stretch and sizes it shrink-to-fit, which reintroduces the
+  same overflow even with `min-width:0`. Grid already centres it.
 
 **Breakpoints — two, mobile-first.** The instrument is designed for both at
 once, not adapted afterward.
@@ -290,11 +332,49 @@ layout shift when a session loads from `localStorage`.
   degrades to an honest note rather than a dead box.
 - Fonts `preload`ed and `font-display: swap`, with a metric-adjacent
   fallback stack so the fold doesn't shift.
-- Light theme only, per mission. No dark mode.
+- Both themes are held to the same floor: every figure must render, and
+  the contrast pairs must be checked on both grounds.
 
 ---
 
-## 10. The sketch
+## 10. Imagery (slice 7)
+
+Two kinds, and the distinction is the point.
+
+**Drawn plates** are original inline SVG in the hairline language of the
+rest of the page: `.rule`, `.box`, `.box-on`, `.lab`, `.val`, `.val-on`.
+All colour comes from the tokens, so they invert with the theme for free
+and cost nothing to load. Five exist: SEER's eight situations, the umpire
+match, the three-machine comparison (an HTML table, not SVG, because it is
+genuinely tabular), the notebook's six entries, and the alternation-bias
+curve.
+
+**Photographs** are locally committed files under `img/`, resized with
+`sips`, with explicit `width`/`height`, `loading="lazy"` and a mild
+`--photo-filter` in dark mode so they do not glare. They are capped by
+**height** (`max-height: 34rem`), not width: a nearly square object photo
+at the full `wide` track is a thousand pixels tall and swallows the page.
+
+**Captions carry two lines with different jobs.** The `figcaption` says
+what the picture is; the `.credit` span says where it came from and under
+what licence. They are never merged.
+
+**The honesty rule.** No photograph of Shannon's mind-reading machine
+exists under a licence we can use. The page therefore shows Nimwit, a
+different Shannon machine from the same years, and the caption's first
+clause says exactly that before it says anything else. A photograph that
+merely looks like the subject, captioned loosely, would be a worse
+violation of "truth in rendering" than having no photograph at all.
+
+**Labels, not figure numbers.** Plates and photographs are labelled
+`PLATE`, not `FIGURE N`. Section 7 numbers only what the prose refers to
+by number, which is the six interactive and data figures. Numbering the
+imagery would have asserted a sequence the prose does not use, and forced
+a renumber of all six.
+
+---
+
+## 11. The sketch
 
 `sketch.html` was the slice 2 sketch — the instrument plus one lecture
 spread, used to judge this direction before committing to it. Its predictor

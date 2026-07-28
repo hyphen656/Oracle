@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Aaronson Oracle — an interactive lesson in human predictability</title>
-<meta name="description" content="A program that guesses whether you will press F or D — before you press it — and is right far more often than chance. Play it, then find out exactly how it works.">
+<title>The Aaronson Oracle: an interactive lesson in human predictability</title>
+<meta name="description" content="A program that guesses whether you will press F or D, before you press it, and is right far more often than chance. Play it, then find out exactly how it works.">
 <meta name="author" content="Spencer Stanton">
 
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -13,12 +13,25 @@
      set it to the deployed origin when the site gets a domain. -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="The Aaronson Oracle">
-<meta property="og:description" content="A program that guesses which key you'll press next — and is right far more often than chance. Play it, then read exactly how it works.">
+<meta property="og:description" content="A program that guesses which key you'll press next, and is right far more often than chance. Play it, then read exactly how it works.">
 <meta property="og:image" content="og-card.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Aaronson Oracle">
-<meta name="twitter:description" content="A program that guesses which key you'll press next — and is right far more often than chance.">
+<meta name="twitter:description" content="A program that guesses which key you'll press next, and is right far more often than chance.">
 <meta name="twitter:image" content="og-card.png">
+
+<!-- Theme, resolved before the first paint so the page never flashes the
+     wrong one. A stored choice wins; otherwise the browser decides. -->
+<script>
+(function () {
+  try {
+    var t = localStorage.getItem('oracle-theme');
+    if (t === 'dark' || t === 'light') {
+      document.documentElement.setAttribute('data-theme', t);
+    }
+  } catch (e) { /* private browsing: fall back to the media query */ }
+})();
+</script>
 
 <link rel="preload" href="fonts/source-serif-4-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/ibm-plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
@@ -28,20 +41,25 @@
 
 <a class="skip" href="#lecture">Skip to the explanation</a>
 
-<header class="masthead measure">
+<!-- Hidden until the script unhides it: with JavaScript off the button
+     would be a control that does nothing, and the page still follows the
+     browser's light or dark setting on its own. -->
+<button class="themetoggle" id="theme-toggle" type="button" aria-live="polite" hidden>
+  Dark
+</button>
+
+<header class="masthead spread">
   <p class="eyebrow">An interactive lesson</p>
   <h1>The Aaronson Oracle</h1>
-  <p class="deck">A program that guesses which key you'll press next — and is
+  <p class="deck">A program that guesses which key you'll press next, and is
   right far more often than chance. Play it first; the explanation is below,
   and it will spoil the surprise.</p>
 </header>
 
-<section class="instrument" aria-label="The oracle">
-  <div class="measure">
-    <div id="oracle-first">
-      <p class="nojs">This experiment needs JavaScript. The explanation below
-      reads fine without it.</p>
-    </div>
+<section class="instrument spread" aria-label="The oracle">
+  <div id="oracle-first">
+    <p class="nojs">This experiment needs JavaScript. The explanation below
+    reads fine without it.</p>
   </div>
 </section>
 
@@ -49,12 +67,15 @@
   <article>
 
     <!-- ============================================ the story -->
-    <section class="section measure" id="story">
+    <section class="section spread" id="story">
       <p class="eyebrow">The story</p>
       <h2>Two machines in a corridor at Bell Labs</h2>
 
       <p>This experiment is seventy years old, and it was built out of relays
       before it was ever written as software.</p>
+
+      <p class="railnote"><b>c. 1951</b><br>Bell Telephone
+      Laboratories<br>Murray Hill, New Jersey</p>
 
       <p>Some time in the early 1950s, at Bell Laboratories, an engineer named
       David Hagelbarger built a machine to play <em>matching pennies</em>
@@ -65,7 +86,7 @@
       Robot.<a href="#ref-2"><sup>2</sup></a></p>
 
       <p>SEER did not model you in any deep way. It tracked three facts about
-      the last two rounds — whether it had won or lost the play before last,
+      the last two rounds: whether it had won or lost the play before last,
       whether it had played the same or differently, and whether it had won or
       lost the last play. Three yes-or-no facts give eight possible
       situations, and for each of the eight the machine remembered whether
@@ -74,81 +95,209 @@
       described with a phrase worth keeping: the stops "in effect make the
       machine forget ancient history."<a href="#ref-2"><sup>2</sup></a></p>
 
+      <figure class="wide">
+        <svg class="plate-svg" viewBox="0 0 640 232" role="img"
+             aria-label="A table of SEER's eight situations. Three yes-or-no
+             questions about the last two rounds combine into eight columns,
+             and each column carries its own counter running from minus three
+             to plus three.">
+          <text class="lab" x="145" y="51" text-anchor="end">WON BEFORE LAST</text>
+          <text class="lab" x="145" y="83" text-anchor="end">PLAYED THE SAME</text>
+          <text class="lab" x="145" y="115" text-anchor="end">WON THE LAST</text>
+          <text class="lab" x="145" y="160" text-anchor="end">ITS COUNTER</text>
+
+          <g class="box">
+            <rect x="152" y="32" width="54" height="28"/><rect x="152" y="64" width="54" height="28"/><rect x="152" y="96" width="54" height="28"/>
+            <rect x="210" y="32" width="54" height="28"/><rect x="210" y="64" width="54" height="28"/><rect x="210" y="96" width="54" height="28"/>
+            <rect x="268" y="32" width="54" height="28"/><rect x="268" y="64" width="54" height="28"/><rect x="268" y="96" width="54" height="28"/>
+            <rect x="326" y="32" width="54" height="28"/><rect x="326" y="64" width="54" height="28"/><rect x="326" y="96" width="54" height="28"/>
+            <rect x="384" y="32" width="54" height="28"/><rect x="384" y="64" width="54" height="28"/><rect x="384" y="96" width="54" height="28"/>
+            <rect x="442" y="32" width="54" height="28"/><rect x="442" y="64" width="54" height="28"/><rect x="442" y="96" width="54" height="28"/>
+            <rect x="500" y="32" width="54" height="28"/><rect x="500" y="64" width="54" height="28"/><rect x="500" y="96" width="54" height="28"/>
+            <rect x="558" y="32" width="54" height="28"/><rect x="558" y="64" width="54" height="28"/><rect x="558" y="96" width="54" height="28"/>
+            <rect x="152" y="140" width="54" height="30"/><rect x="210" y="140" width="54" height="30"/>
+            <rect x="268" y="140" width="54" height="30"/><rect x="326" y="140" width="54" height="30"/>
+            <rect x="384" y="140" width="54" height="30"/><rect x="442" y="140" width="54" height="30"/>
+            <rect x="500" y="140" width="54" height="30"/><rect x="558" y="140" width="54" height="30"/>
+          </g>
+
+          <g text-anchor="middle">
+            <text class="lab" x="179" y="51">N</text><text class="lab" x="179" y="83">N</text><text class="lab" x="179" y="115">N</text>
+            <text class="lab" x="237" y="51">N</text><text class="lab" x="237" y="83">N</text><text class="val" x="237" y="115">Y</text>
+            <text class="lab" x="295" y="51">N</text><text class="val" x="295" y="83">Y</text><text class="lab" x="295" y="115">N</text>
+            <text class="lab" x="353" y="51">N</text><text class="val" x="353" y="83">Y</text><text class="val" x="353" y="115">Y</text>
+            <text class="val" x="411" y="51">Y</text><text class="lab" x="411" y="83">N</text><text class="lab" x="411" y="115">N</text>
+            <text class="val" x="469" y="51">Y</text><text class="lab" x="469" y="83">N</text><text class="val" x="469" y="115">Y</text>
+            <text class="val" x="527" y="51">Y</text><text class="val" x="527" y="83">Y</text><text class="lab" x="527" y="115">N</text>
+            <text class="val" x="585" y="51">Y</text><text class="val" x="585" y="83">Y</text><text class="val" x="585" y="115">Y</text>
+          </g>
+
+          <path class="rule" d="M152 186 L152 194 L612 194 L612 186"/>
+          <text class="lab" x="382" y="216" text-anchor="middle">EIGHT SITUATIONS, EIGHT COUNTERS, EACH STOPPING AT &#177;3</text>
+        </svg>
+        <figcaption><b>Plate</b>SEER's whole memory. Three yes-or-no facts
+        about the last two rounds give eight situations, and each situation
+        keeps one small counter of whether playing the same has been working.
+        The stops at plus and minus three are what Hagelbarger meant by
+        making the machine forget ancient history.</figcaption>
+      </figure>
+
       <p>Claude Shannon, who worked down the hall, took note and built his
       own. His memorandum of 18 March 1953 opens by giving Hagelbarger the
       credit plainly, and then makes a comparison that tells you exactly what
       kind of machine this is:</p>
 
-      <blockquote>
-        <p>This machine is a somewhat simplified model of a machine designed
-        by D. W. Hagelbarger. It plays what is essentially the old game of
-        matching pennies or "odds and evens." This game has been discussed
-        from the game theoretic angle by von Neumann and Morgenstern, and from
-        the psychological point of view by Edgar Allen Poe in the "The
-        Purloined Letter." Oddly enough, the machine is aimed more nearly at
-        Poe's method of play than von Neumann's.</p>
-        <cite>Shannon, A Mind-Reading (?) Machine, 1953<a href="#ref-1"><sup>1</sup></a></cite>
-      </blockquote>
+      <aside class="full quoteband">
+        <div class="qb-inner is-plain">
+          <blockquote>
+            <p>This machine is a somewhat simplified model of a machine designed
+            by D. W. Hagelbarger. It plays what is essentially the old game of
+            matching pennies or "odds and evens." This game has been discussed
+            from the game theoretic angle by von Neumann and Morgenstern, and from
+            the psychological point of view by Edgar Allen Poe in the "The
+            Purloined Letter." Oddly enough, the machine is aimed more nearly at
+            Poe's method of play than von Neumann's.</p>
+            <cite>Shannon, A Mind-Reading (?) Machine, 1953<a href="#ref-1"><sup>1</sup></a></cite>
+          </blockquote>
+        </div>
+      </aside>
 
       <p>That is the whole idea in one sentence. Game theory tells you the
       correct way to play matching pennies: flip a mental coin, be genuinely
       random, and no opponent can beat you over time. Poe's detective does
-      something else entirely — he studies his opponent and guesses what sort
+      something else entirely. He studies his opponent and guesses what sort
       of person would choose what. Shannon built the detective, because the
       detective wins. Not against an ideal player. Against an actual one.</p>
 
       <p>Shannon's machine looked for patterns and, in his words, "assumes
       that the player will follow the patterns the next time the same
       situation arises." When it had not seen a pattern repeat at least twice,
-      it moved at random — and the randomness came from a commutator spinning
+      it moved at random, and the randomness came from a commutator spinning
       about ten times a second, sampled at the moment you pressed the
       button. Its unpredictability was harvested from the jitter in your own
       timing.<a href="#ref-1"><sup>1</sup></a></p>
+
+      <figure class="wide">
+        <img class="figimg" src="img/shannon-nimwit.jpg" width="1200" height="1163"
+             loading="lazy" decoding="async"
+             alt="A wooden cabinet with a clear top showing valves and wiring.
+                  A plate on the front reads NIMWIT, and two columns of lamps
+                  beneath it are labelled PLAYER WINS and MACHINE WINS.">
+        <figcaption><b>Plate</b>Not the mind-reading machine, which is not
+        photographed anywhere we could use, but one of Shannon's other
+        game-playing boxes from the same years: Nimwit, c. 1953, which plays
+        Nim. It is here because of its front panel. Two columns of lamps,
+        <em>player wins</em> against <em>machine wins</em>, is the scoreboard
+        this whole page inherited.
+        <span class="credit">MIT Museum, Cambridge MA. Photograph by Daderot,
+        released under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.
+        <a href="https://commons.wikimedia.org/wiki/File:Nimwit_by_Claude_Shannon,_Nim-playing_machine,_c._1953,_view_1_-_MIT_Museum_-_Cambridge,_MA_-_DSC09104.jpg">Source</a>.</span></figcaption>
+      </figure>
 
       <h3>He knew exactly how to beat it</h3>
 
       <p>What makes Shannon's memo remarkable is that he did not oversell it.
       He worked out how beatable the machine was and published the method:</p>
 
-      <blockquote>
-        <p>A mathematical analysis of the strategy used in this machine shows
-        that it can be beaten by the best possible play in the ratio 3:1. To
-        do this it is necessary to keep track of the contents of all the
-        memory cells in the machine. […] It is extremely difficult to carry
-        out this program mentally because of the amount of memory and
-        calculation necessary.</p>
-        <cite>Shannon, 1953<a href="#ref-1"><sup>1</sup></a></cite>
-      </blockquote>
+      <aside class="full quoteband">
+        <div class="qb-inner is-plain">
+          <blockquote>
+            <p>A mathematical analysis of the strategy used in this machine shows
+            that it can be beaten by the best possible play in the ratio 3:1. To
+            do this it is necessary to keep track of the contents of all the
+            memory cells in the machine. […] It is extremely difficult to carry
+            out this program mentally because of the amount of memory and
+            calculation necessary.</p>
+            <cite>Shannon, 1953<a href="#ref-1"><sup>1</sup></a></cite>
+          </blockquote>
+        </div>
+      </aside>
 
       <p>The machine is not unbeatable. It is beatable three times out of
-      four — <em>on paper</em>. You simply cannot run the method in your head
+      four, <em>on paper</em>. You simply cannot run the method in your head
       while playing. That gap, between what is possible in principle and what
       a person can actually do in the moment, is the entire subject of this
       page, and Shannon named it in 1953.</p>
+
+      <figure class="wide">
+        <img class="figimg" src="img/shannon-theseus.jpg" width="1200" height="697"
+             loading="lazy" decoding="async"
+             alt="An aluminium maze of movable partitions on a flat tray, with
+                  a small black mechanical mouse standing in one of the
+                  corridors and a medal resting in another.">
+        <figcaption><b>Plate</b>Theseus, 1952. The mouse finds its way through
+        the maze, and remembers the route. Shannon's habit of building the
+        idea rather than only writing it down is the reason a memo about
+        outguessing people came with a working machine attached.
+        <span class="credit">MIT Museum, Cambridge MA. Photograph by Daderot,
+        released under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.
+        <a href="https://commons.wikimedia.org/wiki/File:Theseus_Maze_by_Claude_Shannon,_1952_-_MIT_Museum_-_DSC03702.JPG">Source</a>.</span></figcaption>
+      </figure>
 
       <h3>The two machines played each other</h3>
 
       <p>Inevitably, someone wondered which machine was better. Hagelbarger
       recorded what happened:</p>
 
-      <blockquote>
-        <p>After much discussion an umpire machine was built which connected
-        the two machines, and they were allowed to play several thousand
-        games. The agility of the small machine triumphed, and it beat the
-        larger one about 55-45.</p>
-        <cite>Hagelbarger, 1956, quoted in Breazu et al., 2020<a href="#ref-2"><sup>2</sup></a></cite>
-      </blockquote>
+      <aside class="full quoteband">
+        <div class="qb-inner is-plain">
+          <blockquote>
+            <p>After much discussion an umpire machine was built which connected
+            the two machines, and they were allowed to play several thousand
+            games. The agility of the small machine triumphed, and it beat the
+            larger one about 55-45.</p>
+            <cite>Hagelbarger, 1956, quoted in Breazu et al., 2020<a href="#ref-2"><sup>2</sup></a></cite>
+          </blockquote>
+        </div>
+      </aside>
+
+      <figure class="wide">
+        <svg class="plate-svg" viewBox="0 0 640 210" role="img"
+             aria-label="Two machines wired to an umpire machine between them.
+             Hagelbarger's SEER scored 44.2, Shannon's machine scored 55.8.">
+          <g class="box">
+            <rect x="20" y="40" width="180" height="96"/>
+            <rect x="440" y="52" width="180" height="72"/>
+          </g>
+          <rect class="box-on" x="262" y="62" width="116" height="52"/>
+
+          <path class="rule" d="M200 88 L262 88 M378 88 L440 88"/>
+
+          <text class="lab" x="110" y="66" text-anchor="middle">HAGELBARGER</text>
+          <text class="val" x="110" y="92" text-anchor="middle">SEER</text>
+          <text class="lab" x="110" y="118" text-anchor="middle">THE LARGER ONE</text>
+
+          <text class="lab" x="320" y="84" text-anchor="middle">UMPIRE</text>
+          <text class="lab" x="320" y="102" text-anchor="middle">MACHINE</text>
+
+          <text class="lab" x="530" y="76" text-anchor="middle">SHANNON</text>
+          <text class="val" x="530" y="102" text-anchor="middle">THE SMALLER ONE</text>
+
+          <text class="val" x="110" y="170" text-anchor="middle">44.2</text>
+          <text class="val-on" x="530" y="170" text-anchor="middle">55.8</text>
+          <path class="rule" d="M20 182 L620 182"/>
+          <text class="lab" x="320" y="202" text-anchor="middle">SEVERAL THOUSAND GAMES, 1950s &#183; RECHECKED IN SOFTWARE, 2020</text>
+        </svg>
+        <figcaption><b>Plate</b>The two machines were wired to a third that
+        refereed between them. The scores shown are from the 2020 software
+        replication, averaged over games of a hundred plays; Hagelbarger's own
+        report of the original match put it at about 55 to
+        45.<a href="#ref-3"><sup>3</sup></a></figcaption>
+      </figure>
 
       <p>Shannon's simpler machine, built with about half as many relays, beat
       the more elaborate one. In 2020 a group at Sibiu reimplemented both in
       software and played them against each other ten times. Averaged over
-      games of a hundred plays, Shannon's won 55.8 to 44.2 — a sixty-year-old
+      games of a hundred plays, Shannon's won 55.8 to 44.2. A sixty-year-old
       piece of laboratory folklore, checked and
       confirmed.<a href="#ref-3"><sup>3</sup></a></p>
 
+      <p class="railnote"><b>Player 3507</b><br>Machine 5010<br>the lifetime
+      score on the exhibit</p>
+
       <p>Shannon's machine still exists. William Poundstone went to see it at
-      the MIT Museum's storage facility and did not play it — "that would have
-      been almost impious," he wrote, "for it recorded a final score: Player
+      the MIT Museum's storage facility and did not play it, because "that
+      would have been almost impious," he wrote, "for it recorded a final score: Player
       3507. Machine 5010." Across every person who ever sat down with it, the
       machine won about 59% of the time. That is a lifetime tally on an
       exhibit rather than a controlled experiment, and it is the only
@@ -161,22 +310,35 @@
       for a class he taught at Berkeley and describes it in <em>Quantum
       Computing Since Democritus</em>:</p>
 
-      <blockquote>
-        <p>I wrote a simple little program that would let people type either
-        "f" or "d" and would predict which key they were going to push next.
-        It's actually very easy to write a program that will make the right
-        prediction about 70% of the time. Most people don't really know how to
-        type randomly. They'll have too many alternations and so on. […] I
-        couldn't even beat my own program, knowing exactly how it worked. I
-        challenged people to try this and the program was getting between 70%
-        and 80% prediction rates. Then, we found one student that the program
-        predicted exactly 50% of the time. We asked him what his secret was
-        and he responded that he "just used his free will."</p>
-        <cite>Aaronson, Quantum Computing Since Democritus, Lecture 18<a href="#ref-5"><sup>5</sup></a></cite>
-      </blockquote>
+      <aside class="full quoteband">
+        <div class="qb-inner">
+          <figure class="qb-figure">
+            <img class="qb-portrait" src="img/scott-aaronson.jpg"
+                 width="700" height="539" loading="lazy" decoding="async"
+                 alt="Scott Aaronson standing in front of a whiteboard covered
+                      in probability notation.">
+            <span class="credit">Scott Aaronson, 2007. Photograph by Easy n,
+            retouched by Dcoetzee.
+            <a href="https://commons.wikimedia.org/wiki/File:Scott_Aaronson_retouched.jpg">Public domain</a>.</span>
+          </figure>
+          <blockquote>
+            <p>I wrote a simple little program that would let people type either
+            "f" or "d" and would predict which key they were going to push next.
+            It's actually very easy to write a program that will make the right
+            prediction about 70% of the time. Most people don't really know how to
+            type randomly. They'll have too many alternations and so on. […] I
+            couldn't even beat my own program, knowing exactly how it worked. I
+            challenged people to try this and the program was getting between 70%
+            and 80% prediction rates. Then, we found one student that the program
+            predicted exactly 50% of the time. We asked him what his secret was
+            and he responded that he "just used his free will."</p>
+            <cite>Aaronson, Quantum Computing Since Democritus, Lecture 18<a href="#ref-5"><sup>5</sup></a></cite>
+          </blockquote>
+        </div>
+      </aside>
 
       <p>Hold on to two things there. The first is that Aaronson could not
-      beat his own program while knowing its source code — the same admission
+      beat his own program while knowing its source code, the same admission
       Shannon made about his relays. The second is the student, whom we will
       come back to at the end, because how he did it is the point rather than
       the exception.</p>
@@ -184,17 +346,68 @@
       <h3>Where our version departs</h3>
 
       <p>Ours is not a copy of either machine. Shannon's tracked whether it
-      was winning and whether you had changed your choice — eight situations,
-      no memory of your actual sequence. Ours ignores winning and losing
-      entirely and simply counts what you pressed after each recent run of
-      presses. Aaronson's used runs of five, and so does ours. His forgot
-      nothing; Hagelbarger's deliberately forgot; ours also never forgets, so
-      a habit you drop early keeps counting against you for the rest of the
-      session.</p>
+      was winning and whether you had changed your choice, giving it eight
+      situations and no memory of your actual sequence. Ours ignores winning
+      and losing entirely and simply counts what you pressed after each recent
+      run of presses. Aaronson's used runs of five, and so does ours. His
+      forgot nothing; Hagelbarger's deliberately forgot; ours also never
+      forgets, so a habit you drop early keeps counting against you for the
+      rest of the session.</p>
+
+      <figure class="wide">
+        <div class="scrollx" tabindex="0" role="group" aria-label="Comparison of the three machines">
+        <table class="plate-table">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Hagelbarger, 1951</th>
+              <th scope="col">Shannon, 1953</th>
+              <th scope="col">This page</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">What it watches</th>
+              <td>Whether it won, and whether it repeated</td>
+              <td>Whether it won, and whether you repeated</td>
+              <td class="is-ours">Only what you pressed</td>
+            </tr>
+            <tr>
+              <th scope="row">How far back</th>
+              <td>Two rounds</td>
+              <td>Two rounds</td>
+              <td class="is-ours">Five presses</td>
+            </tr>
+            <tr>
+              <th scope="row">Situations kept</th>
+              <td>8</td>
+              <td>8</td>
+              <td class="is-ours">63</td>
+            </tr>
+            <tr>
+              <th scope="row">Forgetting</th>
+              <td>Deliberate, counters stop at &#177;3</td>
+              <td>None</td>
+              <td class="is-ours">None</td>
+            </tr>
+            <tr>
+              <th scope="row">When unsure</th>
+              <td>Plays at random</td>
+              <td>Commutator, sampled on your keypress</td>
+              <td class="is-ours">Shortens the question, then a coin flip</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+        <figcaption><b>Plate</b>Three machines, seventy years apart, and what
+        each one actually keeps. The count of 63 is every run of five presses
+        or fewer: 32 of length five, 16 of four, and so on down to the empty
+        run.</figcaption>
+      </figure>
     </section>
 
     <!-- ============================================ in English -->
-    <section class="section measure" id="in-english">
+    <section class="section spread" id="in-english">
       <p class="eyebrow">How it works, in English</p>
       <h2>What just happened to you</h2>
 
@@ -210,12 +423,55 @@
       D; after <code>F</code> you pressed D; and, ignoring context entirely,
       you pressed D.</p>
 
+      <figure class="wide">
+        <svg class="plate-svg" viewBox="0 0 640 274" role="img"
+             aria-label="One press writing six entries into the notebook. The
+             run F D D F F followed by a press of D adds an entry at every
+             context length from five presses down to none.">
+          <text class="lab" x="20" y="24">YOUR LAST FIVE PRESSES</text>
+          <g class="box">
+            <rect x="20" y="34" width="40" height="36"/>
+            <rect x="64" y="34" width="40" height="36"/>
+            <rect x="108" y="34" width="40" height="36"/>
+            <rect x="152" y="34" width="40" height="36"/>
+            <rect x="196" y="34" width="40" height="36"/>
+          </g>
+          <rect class="box-on" x="248" y="34" width="40" height="36"/>
+          <g class="val" text-anchor="middle">
+            <text x="40" y="58">F</text><text x="86" y="58">D</text>
+            <text x="130" y="58">D</text><text x="174" y="58">F</text>
+            <text x="218" y="58">F</text>
+          </g>
+          <text class="val-on" x="268" y="58" text-anchor="middle">D</text>
+          <text class="lab" x="300" y="58">&#8592; THE PRESS YOU JUST MADE</text>
+
+          <path class="rule" d="M20 88 L620 88"/>
+          <text class="lab" x="20" y="112">SIX ENTRIES, WRITTEN AT ONCE</text>
+
+          <g class="val">
+            <text x="20" y="140">FDDFF</text><text x="20" y="164">DDFF</text>
+            <text x="20" y="188">DFF</text><text x="20" y="212">FF</text>
+            <text x="20" y="236">F</text>
+          </g>
+          <text class="lab" x="20" y="260">NO CONTEXT</text>
+          <g class="lab">
+            <text x="120" y="140">&#8594; D</text><text x="120" y="164">&#8594; D</text>
+            <text x="120" y="188">&#8594; D</text><text x="120" y="212">&#8594; D</text>
+            <text x="120" y="236">&#8594; D</text><text x="120" y="260">&#8594; D</text>
+          </g>
+        </svg>
+        <figcaption><b>Plate</b>One press, six entries. The notebook records
+        the same event at every context length at once, from the full run of
+        five down to no context at all. Nothing else is stored: no timing, no
+        history of who was winning, no model of you.</figcaption>
+      </figure>
+
       <p>To guess your next press, it reads the notebook backwards. It takes
       your last five presses and asks: have I seen this exact run before, and
       if so, what did you do next? If it has seen that run at least twice and
       you did not do both things equally often, it answers with whichever you
       did more. If the run is new, or it has only seen it once, or you split
-      evenly — it shortens the question. What about the last four presses?
+      evenly, then it shortens the question. What about the last four presses?
       The last three? Two? One? And if all of that fails, it flips a coin,
       and that coin flip counts against its score like any other guess.</p>
 
@@ -224,7 +480,7 @@
       A long run is a specific match: it tells you a lot when it applies. But
       early in a session you have not produced many five-press runs, so most
       of them have been seen exactly once, and a single observation is not
-      evidence — it is a coincidence. A short run is vaguer but far better
+      evidence. It is a coincidence. A short run is vaguer but far better
       attested. The program prefers the longest run it has seen <em>often
       enough to trust</em>, and slides down to shorter, better-supported
       questions when the specific ones are thin.</p>
@@ -245,7 +501,7 @@
     </section>
 
     <!-- ============================================ actually -->
-    <section class="section measure" id="actually">
+    <section class="section spread" id="actually">
       <p class="eyebrow">How it works, actually</p>
       <h2>Counting, and knowing when to stop</h2>
 
@@ -255,8 +511,8 @@
       16 of four, and so on down to the empty run, which is the count of every
       press you have ever made.</p>
 
-      <p>Write <em>c</em> for a run of presses — the <em>context</em> — and
-      <em>N</em>(<em>c</em>, F) for the number of times you pressed F
+      <p>Write <em>c</em> for a run of presses, called the <em>context</em>,
+      and <em>N</em>(<em>c</em>, F) for the number of times you pressed F
       immediately after that run. The prediction rule is: take the longest
       context <em>c</em> matching your recent presses such that</p>
 
@@ -270,8 +526,11 @@
       same problem appears: specific evidence is better, but specific evidence
       is rare.</p>
 
+      <p class="railnote"><b>Backoff</b><br>prefer the longest run you have
+      seen often enough to trust</p>
+
       <p>The threshold of two is doing real work. Without it, a run seen a
-      single time — a 1–0 count — would outrank a two-press context seen forty
+      single time, a 1–0 count, would outrank a two-press context seen forty
       times as 30–10, purely because it was longer. That is the classic
       sparse-data failure, and it makes the model noisier than counting alone
       would be.</p>
@@ -279,18 +538,22 @@
       <p>Aaronson described his original in almost these terms. Asked what the
       Berkeley program did, he replied:</p>
 
-      <blockquote>
-        <p>All the basic program did was to examine all 32 possible 5-grams
-        (sequences of five f's and d's), and see which 5-grams were more
-        likely to be followed by f or by d in the user's previous keypresses,
-        and then use that to generate a prediction based on the most recent
-        5-gram. There might have been various enhancements on top of that —
-        e.g., if you're not taking enough data for 5-grams to be useful, then
-        you can also look at 4-grams and 3-grams […]</p>
-        <cite>Aaronson, by email, quoted in Nick Merrill's implementation<a href="#ref-6"><sup>6</sup></a></cite>
-      </blockquote>
+      <aside class="full quoteband">
+        <div class="qb-inner is-plain">
+          <blockquote>
+            <p>All the basic program did was to examine all 32 possible 5-grams
+            (sequences of five f's and d's), and see which 5-grams were more
+            likely to be followed by f or by d in the user's previous keypresses,
+            and then use that to generate a prediction based on the most recent
+            5-gram. There might have been various enhancements on top of that —
+            e.g., if you're not taking enough data for 5-grams to be useful, then
+            you can also look at 4-grams and 3-grams […]</p>
+            <cite>Aaronson, by email, quoted in Nick Merrill's implementation<a href="#ref-6"><sup>6</sup></a></cite>
+          </blockquote>
+        </div>
+      </aside>
 
-      <p>Note the hedge — "there might have been." He is suggesting backoff,
+      <p>Note the hedge, "there might have been." He is suggesting backoff,
       not recalling it. Our threshold and our backoff are our own choices,
       taken on his suggestion, and not a reconstruction of the program he ran
       in that lecture hall.</p>
@@ -304,13 +567,13 @@
     </section>
 
     <!-- ============================================ read the machine -->
-    <section class="section measure" id="read-the-machine">
+    <section class="section spread" id="read-the-machine">
       <p class="eyebrow">Read the machine</p>
       <h2>The entire program</h2>
 
       <p>Below is the predictor, in full. Not a summary of it, not a cleaned
-      up version for the article — the file this page loaded and ran while you
-      were playing. It is <span id="oracle-lines">a few dozen</span> lines
+      up version for the article, but the file this page loaded and ran while
+      you were playing. It is <span id="oracle-lines">a few dozen</span> lines
       long, and its shortness is the lesson: this is all it takes.</p>
 
       <figure class="wide" id="fig-source">
@@ -321,7 +584,7 @@
           and it is the whole predictor.</p>
         </noscript>
         <figcaption><b>Figure 4</b><span id="oracle-source-note">The predictor,
-        loaded from <code>oracle.js</code> — the same file this page is
+        loaded from <code>oracle.js</code>, the same file this page is
         running.</span></figcaption>
       </figure>
 
@@ -334,7 +597,7 @@
     </section>
 
     <!-- ============================================ about us -->
-    <section class="section measure" id="about-us">
+    <section class="section spread" id="about-us">
       <p class="eyebrow">What it says about us</p>
       <h2>Why you lost</h2>
 
@@ -342,7 +605,7 @@
       of something about you, and that something has been measured for
       decades.</p>
 
-      <p>The task you were given — produce a sequence with no pattern in it —
+      <p>The task you were given, producing a sequence with no pattern in it,
       is called random sequence generation, and it is one of the more studied
       failures in experimental psychology. A 2023 review states the finding
       without hedging: "A common finding of RSG studies is that people are bad
@@ -374,10 +637,47 @@
       random: shown binary sequences to judge, participants rate the ones with
       the most switching as the most likely, with the peak somewhere around a
       0.6 to 0.8 rate of alternation against a true value of
-      0.5.<a href="#ref-9"><sup>9</sup></a> Sequences with more structure —
-      HHHHH rather than HTTHT — are judged less
+      0.5.<a href="#ref-9"><sup>9</sup></a> Sequences with more structure,
+      HHHHH rather than HTTHT, are judged less
       probable.<a href="#ref-10"><sup>10</sup></a> We generate wrongly and we
       grade wrongly, in the same direction.</p>
+
+      <figure class="wide">
+        <svg class="plate-svg" viewBox="0 0 640 250" role="img"
+             aria-label="A chart of judged randomness against alternation rate.
+             The curve people produce peaks somewhere between 0.6 and 0.8,
+             while a fair coin sits at 0.5.">
+          <path class="rule" d="M56 30 L56 194 L616 194"/>
+
+          <path class="curve-true" d="M336 30 L336 194"/>
+          <text class="lab" x="336" y="22" text-anchor="middle">A FAIR COIN: 0.5</text>
+
+          <!-- Apex sits at about x=470, which is 0.74 on the axis: inside
+               the 0.6 to 0.8 the caption claims, not past it. -->
+          <path class="curve" d="M56 186 C 150 180, 240 148, 330 106
+                                  C 378 82, 428 58, 470 56
+                                  C 520 54, 566 96, 616 158"/>
+
+          <g class="lab" text-anchor="middle">
+            <text x="56" y="214">0.0</text>
+            <text x="196" y="214">0.25</text>
+            <text x="336" y="214">0.5</text>
+            <text x="476" y="214">0.75</text>
+            <text x="616" y="214">1.0</text>
+          </g>
+          <text class="lab" x="336" y="240" text-anchor="middle">RATE OF ALTERNATION IN THE SEQUENCE</text>
+          <text class="lab" x="56" y="22">JUDGED MOST RANDOM</text>
+
+          <path class="rule" d="M474 48 L500 32"/>
+          <text class="lab" x="506" y="30">PEAK, 0.6 TO 0.8</text>
+        </svg>
+        <figcaption><b>Plate</b>The shape of the mistake, drawn from the
+        finding rather than from data: asked which binary sequences look most
+        random, people peak somewhere around 0.6 to 0.8 alternation, while a
+        fair coin alternates half the time.<a href="#ref-9"><sup>9</sup></a>
+        The curve is an illustration of that reported peak, not a plot of
+        published measurements.</figcaption>
+      </figure>
 
       <h3>The instruction itself hurt you</h3>
 
@@ -389,9 +689,9 @@
 
       <p>Shannon's players were playing a game and trying to win. You were
       told to be random. The literature says the second framing is the worse
-      one — that consciously attempting randomness makes you more predictable
-      than simply trying to beat an opponent. The instruction at the top of
-      this page was, in a small way, working against you.</p>
+      one, and that consciously attempting randomness makes you more
+      predictable than simply trying to beat an opponent. The instruction at
+      the top of this page was, in a small way, working against you.</p>
 
       <figure class="wide" id="fig-accuracy">
         <div class="figbox" id="figure-accuracy" data-figure="accuracy"></div>
@@ -402,7 +702,7 @@
     </section>
 
     <!-- ============================================ rematch -->
-    <section class="section measure" id="rematch">
+    <section class="section spread" id="rematch">
       <p class="eyebrow">The rematch</p>
       <h2>Now that you know</h2>
 
@@ -421,16 +721,19 @@
 
       <p>Knowing the algorithm gives you nothing, because the algorithm was
       never the hard part. The hard part is generating the sequence, and you
-      are the one generating it — with the same machinery that produced the
+      are the one generating it, with the same machinery that produced the
       biases in the first place. Understanding a bias from the outside does
       not switch it off from the inside.</p>
+
+      <p class="railnote"><b>The reliable methods</b><br>all amount to the
+      same move: take the decision out of your own head</p>
 
       <p>If you do beat it, the interesting question is <em>how</em>. The
       reliable answers all have one thing in common: they take the decision
       out of your head. Poundstone, playing a modern implementation, found he
-      did better when he stopped watching the score — "I found I did better
+      did better when he stopped watching the score. "I found I did better
       when I tried to ignore the feedback, and better yet when I made sure I
-      couldn't see the bars"<a href="#ref-4"><sup>4</sup></a> — and better
+      couldn't see the bars"<a href="#ref-4"><sup>4</sup></a>, and better
       again when he deliberately repeated choices his instincts wanted to
       alternate. Others read digits off something external, or run a rule in
       their head that is cheap to compute but hard to detect.</p>
@@ -438,7 +741,7 @@
       <p>Which brings back Aaronson's student, the one the program predicted
       exactly 50% of the time and who said he "just used his free will." We
       have no record of what he actually did. But whatever it was, it was a
-      method — a way of choosing that his own habits could not reach. That is
+      method, a way of choosing that his own habits could not reach. That is
       not a smaller thing than free will. It is just a more useful description
       of it: not the absence of a cause, but the ability to hand the decision
       to something other than your reflexes.</p>
@@ -447,16 +750,14 @@
       guess before every press.</p>
     </section>
 
-    <section class="instrument" aria-label="The rematch">
-      <div class="measure">
-        <div id="oracle-rematch">
-          <p class="nojs">This experiment needs JavaScript.</p>
-        </div>
+    <section class="instrument spread" aria-label="The rematch">
+      <div id="oracle-rematch">
+        <p class="nojs">This experiment needs JavaScript.</p>
       </div>
     </section>
 
     <!-- ============================================ references -->
-    <section class="section measure" id="references">
+    <section class="section spread" id="references">
       <p class="eyebrow">References</p>
       <h2>Sources</h2>
 
@@ -526,15 +827,40 @@
         <a href="https://doi.org/10.1016/j.cognition.2017.11.002">DOI</a> ·
         <a href="https://openaccess.city.ac.uk/id/eprint/18626/1/Coin%20Tossing%20R3%20Clean.pdf">accepted version (PDF)</a>.</li>
       </ol>
-
-      <p class="endnote">The idea and the algorithm are Aaronson's, and the
-      lineage is Hagelbarger's and Shannon's. This page is a teaching version
-      of their work, and it is not affiliated with any of them. Prior web
-      implementations exist and are credited in reference 6.</p>
     </section>
 
   </article>
 </main>
+
+<footer class="sitefoot spread">
+  <div class="footgrid wide">
+    <div>
+      <h2>About this page</h2>
+      <p>The idea and the algorithm are Aaronson's, and the lineage is
+      Hagelbarger's and Shannon's. This page is a teaching version of their
+      work, and it is not affiliated with any of them. Prior web
+      implementations exist and are credited in reference 6.</p>
+      <p>Built by Spencer Stanton as plain HTML, CSS and JavaScript. No
+      framework, no build step, no analytics, and nothing about you leaves
+      your browser: your session is held in <code>localStorage</code> and
+      nowhere else.</p>
+    </div>
+    <div>
+      <h2>Photographs</h2>
+      <ul>
+        <li>Nimwit and Theseus, MIT Museum. Photographs by Daderot, released
+        under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>
+        via Wikimedia Commons.</li>
+        <li>Scott Aaronson. Photograph by Easy n, retouched by Dcoetzee,
+        <a href="https://commons.wikimedia.org/wiki/File:Scott_Aaronson_retouched.jpg">public domain</a>
+        via Wikimedia Commons.</li>
+        <li>The drawn plates are original to this page. No photograph of
+        Shannon's mind-reading machine was available under a licence we could
+        use, so it is described rather than shown.</li>
+      </ul>
+    </div>
+  </div>
+</footer>
 
 <script src="oracle.js"></script>
 <script src="game.js"></script>
@@ -550,7 +876,7 @@
     extendTo: 100,
     prompt: 'Press F or D. Try to be unpredictable.',
     believe: 'The guess is sealed <strong>before</strong> you press, and it is ' +
-      'really in the page while you decide — the plate carries it as ' +
+      'really in the page while you decide: the plate carries it as ' +
       '<code>data-sealed</code>. Open your browser\'s inspector and read it ' +
       'before you choose. The predictor is printed in full further down; it ' +
       'is short enough to check yourself.',
@@ -560,7 +886,7 @@
           'have managed 50%. Scroll down to find out what it saw.';
       }
       if (pct >= 50) {
-        return 'The oracle predicted you ' + pct + '% of the time — barely better ' +
+        return 'The oracle predicted you ' + pct + '% of the time, barely better ' +
           'than a coin. That is a good result. Scroll down to find out what it ' +
           'was looking for, and why most people do worse.';
       }
@@ -587,7 +913,7 @@
       }
       if (pct >= 45) {
         return 'You held it near chance. Worth asking honestly: did you find a ' +
-          'source of randomness outside your own head — a rhythm, a rule, ' +
+          'source of randomness outside your own head, a rhythm, a rule, ' +
           'something you were reading off? That is how it is usually done.';
       }
       return 'You beat it, and comfortably. Worth asking honestly what you used, ' +
@@ -597,6 +923,37 @@
   });
 
   if (window.oracleFigures) window.oracleFigures.init(first);
+
+  // The theme toggle. The head script already applied any stored choice;
+  // this only labels the button and lets the reader change it.
+  var root = document.documentElement;
+  var btn = document.getElementById('theme-toggle');
+  var media = window.matchMedia('(prefers-color-scheme: dark)');
+  btn.hidden = false;
+
+  function isDark() {
+    var set = root.getAttribute('data-theme');
+    return set ? set === 'dark' : media.matches;
+  }
+  function label() {
+    var next = isDark() ? 'Light' : 'Dark';
+    btn.textContent = next;
+    btn.setAttribute('aria-label', 'Switch to ' + next.toLowerCase() + ' theme');
+  }
+
+  btn.addEventListener('click', function () {
+    var next = isDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('oracle-theme', next); } catch (e) { /* ignore */ }
+    label();
+  });
+
+  // Follow the browser until the reader overrides it.
+  media.addEventListener('change', function () {
+    if (!root.getAttribute('data-theme')) label();
+  });
+
+  label();
 })();
 </script>
 </body>
