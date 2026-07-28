@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Vercel CLI, if you ever link the project locally
+.vercel
+
+# Working documents: the mission, the plan, the design spec, the research
+# dossier and the agent instructions. These govern how the site is built;
+# they are not part of the site. They stay on disk and out of the repo.
+#
+# Note: they exist in the history of commits 6ff3d82..8666b91. Untracking
+# them here stops them being published going forward, it does not erase
+# them from the past.
+BRIEF.md
+CLAUDE.md
+DESIGN.md
+DOCTRINE.md
+DOSSIER.md
+MISSION.md
