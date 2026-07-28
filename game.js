@@ -49,7 +49,10 @@
 
     var keys = el('div', 'keys');
     var keyEls = {};
-    ['F', 'D'].forEach(function (k) {
+    // D then F: the on-screen keys sit in the same order as the fingers
+    // find them on the keyboard, so the touch targets and the home row
+    // never disagree about which side is which.
+    ['D', 'F'].forEach(function (k) {
       var b = el('button', 'key', k);
       b.type = 'button';
       b.setAttribute('aria-label', 'Press ' + k);
