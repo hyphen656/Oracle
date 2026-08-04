@@ -1,16 +1,25 @@
 /*
  * game.js: the instrument, as a component the page mounts twice.
  *
- * Not shown on the page. All the interesting logic is in oracle.js;
- * this file is the session, the keyboard and touch handling, and the
- * commit -> press -> reveal choreography from DESIGN.md.
+ * Not shown on the page. All the interesting logic is in oracle.js, and
+ * the drawing is in column.js; this file is the session, the keyboard and
+ * touch handling, and the commit -> press -> reveal cycle from DESIGN.md.
+ *
+ * There is no session length. You press until you stop wanting to, which
+ * means nothing here ever locks the keys, and the running score has to be
+ * legible at every moment rather than announced at a finish line.
  */
 (function () {
   'use strict';
 
-  var REVEAL_HOLD = 700;   // ms the prediction stays visible
+  var REVEAL_HOLD = 700;   // ms the revealed guess stays up
   var STRUCK = 90;         // ms the key stays depressed
   var STORE = 'aaronson-oracle.v1.';
+
+  var MILESTONE = 50;      // where the summary note appears; play continues
+  var TALLY_KEEP = 50;     // most recent presses kept in the tally row
+  var MIN_FOR_PCT = 10;    // under this a percentage is noise, not a score
+  var MAX_RESTORE = 5000;  // a corrupt blob must not hang the boot replay
 
   var instruments = [];
 
@@ -21,15 +30,34 @@
     return n;
   }
 
+  // The last n presses, as a string. The same run oracle.js would look up.
+  function contextOf(o, n) {
+    var h = o.history;
+    return h.slice(Math.max(0, h.length - n)).join('');
+  }
+
+  // Another instrument's stored score, for the rematch's comparison mark.
+  // Returns null rather than a number when there is nothing worth comparing.
+  function storedPercent(id) {
+    try {
+      var raw = localStorage.getItem(STORE + id);
+      if (!raw) return null;
+      var data = JSON.parse(raw);
+      var hits = data && data.hits;
+      if (typeof hits !== 'string' || hits.length < MIN_FOR_PCT) return null;
+      var right = 0;
+      for (var i = 0; i < hits.length; i++) if (hits.charAt(i) === '1') right++;
+      return Math.round(100 * right / hits.length);
+    } catch (e) { return null; }
+  }
+
   function createInstrument(root, opts) {
-    var target = opts.target || 50;
-    var extendTo = opts.extendTo || 0;
     var id = opts.id;
 
     var oracle = createOracle();
     var sealed = null;         // the committed prediction, before the press
     var hits = [];             // one boolean per press: was it right?
-    var done = false;
+    var noted = false;         // has the milestone note been written yet
     var rearmTimer = null;
 
     /* ---------------------------------------------------------- markup */
@@ -41,11 +69,58 @@
 
     var stage = el('div', 'stage');
 
-    var plate = el('div', 'plate');
-    var guess = el('span', 'guess');
-    var cover = el('div', 'cover');
-    cover.append(el('span', null, 'Sealed'));
-    plate.append(guess, cover);
+    // The drawing, and the commitment. The guess is really in the page while
+    // you decide — data-sealed carries it, exactly as the note below the
+    // instrument says — while the drawing shows where it came from without
+    // spelling out the answer.
+    var column = el('div', 'column');
+    var board = el('div', 'board');
+    var legend = el('p', 'column-cap', 'One band per run length, your last ' +
+      'five presses at the top. Every grain is one time you made that run: ' +
+      'left of the line you followed it with D, right with F. The guess falls ' +
+      'down the middle until a band is solid enough to hold it.');
+    column.append(board, legend);
+
+    /* ----------------------------------------------------------- meter */
+    var meter = el('div', 'meter');
+    var mNum = el('div', 'm-num', '—');
+    var mCap = el('div', 'm-cap', 'predicted');
+    var mTrack = el('div', 'm-track');
+    var mYou = el('div', 'm-you');
+
+    function mark(cls, at, text) {
+      var n = el('div', cls);
+      n.style.setProperty('--at', at + '%');
+      mTrack.append(n);
+      if (text) {
+        var lab = el('div', 'm-lab', text);
+        lab.style.setProperty('--at', at + '%');
+        mTrack.append(lab);
+      }
+      return n;
+    }
+
+    mTrack.append(mYou);
+    // 70–80% is where Aaronson's class landed; 50% is not an achievement,
+    // so it is a dashed null rather than a filled bar.
+    var band = el('div', 'm-band');
+    band.style.setProperty('--at', '70%');
+    band.style.setProperty('--span', '10%');
+    mTrack.append(band);
+    var classLab = el('div', 'm-lab', 'his class');
+    classLab.style.setProperty('--at', '75%');
+    mTrack.append(classLab);
+    mark('m-mark is-chance', 50, 'chance');
+
+    var firstPct = opts.compare ? storedPercent(opts.compare) : null;
+    if (firstPct !== null) mark('m-mark is-first', firstPct, 'round 1 · ' + firstPct + '%');
+
+    meter.append(mNum, mCap, mTrack);
+    meter.append(el('p', 'm-legend', 'Dashed line 50%, chance. Band 70–80%, ' +
+      'what Aaronson\'s class managed.'));
+
+    var rig = el('div', 'rig');
+    rig.append(column, meter);
 
     var keys = el('div', 'keys');
     var keyEls = {};
@@ -63,18 +138,25 @@
 
     var tally = el('div', 'tally');
     tally.setAttribute('aria-hidden', 'true');
+    var tallyCap = el('p', 'tally-cap');
 
     var readout = el('p', 'readout');
     readout.setAttribute('role', 'status');
     readout.setAttribute('aria-live', 'polite');
 
-    var endstate = el('div', 'endstate');
-    endstate.hidden = true;
+    var endnote = el('p', 'endnote');
+    endnote.hidden = true;
+
+    var actions = el('div', 'actions');
+    var again = el('button', 'btn', 'Start over');
+    again.type = 'button';
+    again.addEventListener('click', reset);
+    actions.append(again);
 
     var believe = el('p', 'believe');
     believe.innerHTML = opts.believe;
 
-    stage.append(plate, keys, tally, readout, endstate, believe);
+    stage.append(rig, keys, tally, tallyCap, readout, endnote, actions, believe);
     root.append(head, stage);
 
     /* ------------------------------------------------------ persistence */
@@ -82,8 +164,7 @@
       try {
         localStorage.setItem(STORE + id, JSON.stringify({
           history: oracle.history.join(''),
-          hits: hits.map(function (h) { return h ? 1 : 0; }).join(''),
-          target: target
+          hits: hits.map(function (h) { return h ? 1 : 0; }).join('')
         }));
       } catch (e) { /* private browsing or quota: the session still works */ }
     }
@@ -97,8 +178,10 @@
       if (!data || typeof data.history !== 'string') return false;
       if (data.history.length !== (data.hits || '').length) return false;
       if (!/^[FD]*$/.test(data.history)) return false;
+      // Play is unbounded, so a hand-edited or corrupted blob could otherwise
+      // hand us an arbitrarily long replay to run before first paint.
+      if (data.history.length > MAX_RESTORE) return false;
 
-      target = data.target || target;
       data.history.split('').forEach(function (k, i) {
         oracle.record(k);
         hits.push(data.hits[i] === '1');
@@ -111,20 +194,40 @@
     function addPip(hit) {
       var p = el('span', 'pip' + (hit ? ' is-hit' : ''));
       tally.append(p);
+      // The row would otherwise grow without bound; past this many presses
+      // it is the texture of recent play, and it says so.
+      while (tally.childNodes.length > TALLY_KEEP) tally.removeChild(tally.firstChild);
     }
 
     function correct() {
       return hits.filter(Boolean).length;
     }
 
+    function percent() {
+      var n = oracle.history.length;
+      return n ? Math.round(100 * correct() / n) : 0;
+    }
+
     function renderCounters() {
-      count.textContent = oracle.history.length + ' / ' + target;
-      if (oracle.history.length === 0) {
-        readout.textContent = opts.prompt;
-      } else {
-        readout.textContent = 'Predicted ' + correct() +
-          ' of your ' + oracle.history.length + ' presses.';
-      }
+      var n = oracle.history.length;
+      count.textContent = n + (n === 1 ? ' press' : ' presses');
+
+      var enough = n >= MIN_FOR_PCT;
+      meter.classList.toggle('is-early', !enough);
+      mNum.textContent = enough ? percent() + '%' : '—';
+      mCap.textContent = enough ? 'predicted' : 'too few presses';
+      mYou.style.setProperty('--at', (enough ? percent() : 0) + '%');
+
+      tallyCap.textContent = !n ? '' : (n > TALLY_KEEP
+        ? 'Your most recent ' + TALLY_KEEP + ' presses. Filled where it had you.'
+        : 'One square per press. Filled where it had you.');
+
+      if (n === 0) readout.textContent = opts.prompt;
+    }
+
+    function draw(state) {
+      try { oracleColumn.render(board, oracle, state); }
+      catch (e) { if (window.console) console.warn('column failed', e); }
     }
 
     // Commit the guess for the NEXT press. This runs the instant a press is
@@ -133,107 +236,66 @@
     // committed, which would make the seal a lie.
     function commit() {
       sealed = oracle.predict();
-      plate.dataset.sealed = sealed.key;   // in the page, always current
+      board.dataset.sealed = sealed.key;   // in the page, always current
     }
 
-    // Close the cover over the already-committed guess.
+    // Show the bands the guess just fell through and the one it is resting
+    // on, with the guess itself still sealed. Everything drawn here is true;
+    // the one thing withheld is the letter, which is the answer.
     function arm() {
-      if (done) return;
-      guess.textContent = sealed.key;
-      plate.classList.remove('is-open');
-      cover.querySelector('span').textContent = 'Sealed';
+      draw({
+        path: contextOf(oracle, oracle.maxContext),
+        decider: sealed.context,
+        guess: '?',
+        hit: null
+      });
+    }
+
+    // The educational framing, once, at the milestone. It does not stop
+    // play and it does not repeat: the keys stay live straight through it.
+    function maybeNote() {
+      if (noted || oracle.history.length < MILESTONE) return;
+      noted = true;
+      endnote.innerHTML = opts.summary(percent(), correct(), oracle.history.length);
+      endnote.hidden = false;
     }
 
     /* ----------------------------------------------------------- press */
     function press(key) {
-      if (done) return;
-
       var k = keyEls[key];
       k.classList.add('is-struck');
       setTimeout(function () { k.classList.remove('is-struck'); }, STRUCK);
 
       var revealed = sealed.key;
+      var from = sealed.context;
+      // sealed.seen is the live tally inside the notebook, and recording
+      // this press is about to change it. Take the numbers it actually
+      // decided on before that happens.
+      var split = sealed.seen ? sealed.seen.F + 'F ' + sealed.seen.D + 'D' : null;
+      var asked = contextOf(oracle, oracle.maxContext);
+
       var wasRight = revealed === key;
       hits.push(wasRight);
       oracle.record(key);
       addPip(wasRight);
 
-      guess.textContent = revealed;
-      plate.classList.add('is-open');
-      renderCounters();
-      readout.textContent = 'Sealed ' + revealed + '. You pressed ' + key +
-        '. ' + (wasRight ? 'Hit' : 'Miss') + '. ' + correct() +
-        ' of ' + oracle.history.length + '.';
-      save();
-      changed();
+      // Hold the band it decided from, now that the notebook has your press
+      // in it. The fall moves when the next guess is armed, not before.
+      draw({ path: asked, decider: from, guess: revealed, hit: wasRight });
 
-      if (oracle.history.length >= target) { finish(); return; }
+      renderCounters();
+      readout.textContent = 'Sealed ' + revealed + ' ' + (from === null
+        ? 'on a coin flip'
+        : 'from ' + (from === '' ? 'no context' : from) + ' (' + split + ')') +
+        '. You pressed ' + key + '. ' + (wasRight ? 'Hit' : 'Miss') + '. ' +
+        correct() + ' of ' + oracle.history.length + '.';
+      save();
+      maybeNote();
+      changed();
 
       commit();   // before any next press can arrive
       clearTimeout(rearmTimer);
       rearmTimer = setTimeout(arm, REVEAL_HOLD);
-    }
-
-    /* ---------------------------------------------------------- finish */
-    function finish() {
-      done = true;
-      clearTimeout(rearmTimer);
-      keyEls.F.disabled = true;
-      keyEls.D.disabled = true;
-      cover.querySelector('span').textContent = 'Done';
-      delete plate.dataset.sealed;
-
-      var n = oracle.history.length;
-      var pct = Math.round(100 * correct() / n);
-
-      endstate.innerHTML = '';
-      endstate.append(el('p', 'eyebrow', 'Session complete'));
-
-      var bars = el('div', 'bars');
-      [
-        ['You', pct, pct + '%', 'you'],
-        ['Chance', 50, '50%', 'ghost'],
-        ["His class", 75, '70–80%', '']
-      ].forEach(function (row) {
-        bars.append(el('span', 'lab', row[0]));
-        var track = el('span', 'track');
-        var fill = el('span', 'fill' + (row[3] ? ' ' + row[3] : ''));
-        fill.style.width = row[1] + '%';
-        track.append(fill);
-        bars.append(track);
-        bars.append(el('span', 'num', row[2]));
-      });
-      endstate.append(bars);
-
-      var note = el('p', 'endnote');
-      note.innerHTML = opts.summary(pct, correct(), n);
-      endstate.append(note);
-
-      var actions = el('div', 'actions');
-      if (extendTo && n < extendTo) {
-        var more = el('button', 'btn', 'Keep going to ' + extendTo);
-        more.type = 'button';
-        more.addEventListener('click', function () {
-          target = extendTo;
-          done = false;
-          keyEls.F.disabled = false;
-          keyEls.D.disabled = false;
-          endstate.hidden = true;
-          renderCounters();
-          commit(); arm();
-        });
-        actions.append(more);
-      }
-      var again = el('button', 'btn', 'Start over');
-      again.type = 'button';
-      again.addEventListener('click', reset);
-      actions.append(again);
-      endstate.append(actions);
-
-      endstate.hidden = false;
-      changed();
-      readout.textContent = 'Session complete. The oracle predicted ' +
-        correct() + ' of your ' + n + ' presses, or ' + pct + ' percent.';
     }
 
     function changed() {
@@ -242,29 +304,27 @@
 
     function reset() {
       try { localStorage.removeItem(STORE + id); } catch (e) {}
+      clearTimeout(rearmTimer);
       oracle = createOracle();
       hits = [];
-      done = false;
-      target = opts.target || 50;
+      noted = false;
       tally.innerHTML = '';
-      endstate.hidden = true;
-      keyEls.F.disabled = false;
-      keyEls.D.disabled = false;
+      endnote.hidden = true;
       renderCounters();
       commit(); arm();
       changed();
     }
 
     /* ------------------------------------------------------------ boot */
-    var hadSession = restore();
+    restore();
     renderCounters();
-    if (hadSession && oracle.history.length >= target) { finish(); }
-    else { commit(); arm(); }
+    if (oracle.history.length >= MILESTONE) maybeNote();
+    commit(); arm();
 
     var api = {
       root: root,
       press: press,
-      isDone: function () { return done; },
+      isDone: function () { return false; },   // nothing ever finishes now
       oracle: function () { return oracle; },
       hits: function () { return hits; }
     };
@@ -274,7 +334,7 @@
 
   /* ---------------------------------------------------------- keyboard */
   // Two instruments share one keyboard. Keys go to whichever one you are
-  // actually looking at: the most-visible unfinished instrument.
+  // actually looking at: the most-visible one.
   function visibleFraction(node) {
     var r = node.getBoundingClientRect();
     var vh = window.innerHeight || document.documentElement.clientHeight;
@@ -289,7 +349,6 @@
 
     var best = null, bestSeen = 0.15;
     instruments.forEach(function (inst) {
-      if (inst.isDone()) return;
       var seen = visibleFraction(inst.root);
       if (seen > bestSeen) { bestSeen = seen; best = inst; }
     });

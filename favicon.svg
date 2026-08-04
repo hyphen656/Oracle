@@ -1,19 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
     .ground { fill: #F4F5F2 }
-    .hatch  { stroke: #C8CCC6 }
-    .plate  { stroke: #1B4D8F }
+    .twig   { stroke: #C8CCC6; fill: none }
+    .node   { fill: #C8CCC6 }
+    .path   { stroke: #1B4D8F; fill: none }
+    .live   { fill: #1B4D8F }
     @media (prefers-color-scheme: dark) {
       .ground { fill: #15171B }
-      .hatch  { stroke: #343A41 }
-      .plate  { stroke: #7FAEEA }
+      .twig   { stroke: #343A41 }
+      .node   { fill: #343A41 }
+      .path   { stroke: #7FAEEA }
+      .live   { fill: #7FAEEA }
     }
   </style>
   <rect class="ground" width="32" height="32"/>
-  <defs>
-    <pattern id="h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-      <line class="hatch" x1="0" y1="0" x2="0" y2="6" stroke-width="2"/>
-    </pattern>
-  </defs>
-  <rect class="plate" x="4" y="7" width="24" height="18" fill="url(#h)" stroke-width="1.5"/>
+  <!-- Three rows of the same tree the instrument draws: the branches it
+       has not taken in hairline, the lit path down the left in --relay. -->
+  <g class="twig" stroke-width="1.2">
+    <path d="M16 7 L24 15"/>
+    <path d="M24 15 L20 23 M24 15 L28 23"/>
+    <path d="M8 15 L12 23"/>
+  </g>
+  <path class="path" stroke-width="2" d="M16 7 L8 15 L4 23"/>
+  <g class="node">
+    <circle cx="24" cy="15" r="2"/>
+    <circle cx="20" cy="23" r="1.4"/>
+    <circle cx="28" cy="23" r="1.4"/>
+    <circle cx="12" cy="23" r="1.4"/>
+  </g>
+  <g class="live">
+    <circle cx="16" cy="7" r="3.2"/>
+    <circle cx="8" cy="15" r="2.4"/>
+    <circle cx="4" cy="23" r="1.8"/>
+  </g>
 </svg>

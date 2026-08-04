@@ -127,6 +127,9 @@
   }
 
   /* ------------------------------ Figure 3: one prediction, step by step */
+  // The same drawing as the instrument, held still. Live, the guess has to
+  // stay sealed; here the press has already happened, so the figure can
+  // show the whole decision at once and say how it went.
   function renderReplay() {
     var box = document.getElementById('figure-replay');
     if (!box) return;
@@ -151,43 +154,47 @@
     }
 
     var known = oracleAfter(history, pick);
-    var recent = history.slice(Math.max(0, pick - 5), pick);
+    var path = history.slice(Math.max(0, pick - known.maxContext), pick).join('');
     var actual = history[pick];
+    var chosen = known.counts.get(decision.context);
 
     var head = el('p', 'fighead');
-    head.innerHTML = 'At press ' + (pick + 1) + ' you had just pressed ' +
-      '<b>' + recent.join(', ') + '</b>. Here is what the machine did with that.';
+    head.innerHTML = 'At press ' + (pick + 1) + ' your last presses were ' +
+      '<b>' + path.split('').join(', ') + '</b>. The lit path is that run, ' +
+      'read from the root downwards: the first step is your most recent ' +
+      'press, and every step after it goes one press further back.';
     box.append(head);
 
-    var steps = el('div', 'steps');
-    for (var n = known.maxContext; n >= 0; n--) {
-      var ctx = history.slice(Math.max(0, pick - n), pick).join('');
-      if (n > pick) continue;
-      var seen = known.counts.get(ctx);
-      var total = seen ? seen.F + seen.D : 0;
+    var board = el('div', 'board');
+    var tree = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    tree.setAttribute('class', 'tree');
+    tree.setAttribute('role', 'img');
+    board.append(tree);
+    box.append(board);
+    oracleTree.render(tree, known, {
+      path: path,
+      decider: decision.context,
+      guess: decision.key,
+      hit: decision.key === actual
+    });
 
-      var why, state;
-      if (!seen) { why = 'never seen before'; state = 'skip'; }
-      else if (total < known.minEvidence) { why = 'seen once, not evidence'; state = 'skip'; }
-      else if (seen.F === seen.D) { why = 'split ' + seen.F + '–' + seen.D + ', no opinion'; state = 'skip'; }
-      else {
-        why = 'seen ' + total + ' times · ' + seen.F + 'F ' + seen.D + 'D → ' +
-              (seen.F > seen.D ? 'F' : 'D');
-        state = 'use';
-      }
-
-      var row = el('div', 'step is-' + state);
-      row.append(el('span', 'step-ctx', ctx === '' ? '(any)' : ctx));
-      row.append(el('span', 'step-why', why));
-      steps.append(row);
-      if (state === 'use') break;
-    }
-    box.append(steps);
-
+    // Say in words what the crosses and the ring mean, once, so the same
+    // marks are readable in the live instrument above.
+    var deeper = path.length - decision.context.length;
     var out = el('p', 'stepout');
-    out.innerHTML = 'It sealed <b>' + decision.key + '</b>. You pressed <b>' +
-      actual + '</b>. ' + (decision.key === actual
-        ? 'It had you.' : 'It missed.');
+    out.innerHTML = (deeper
+      ? 'It asked about the longest run first and gave up on ' + deeper +
+        (deeper === 1 ? ' run' : ' runs') + ' on the way up. Each was either ' +
+        'seen only once, or evenly split — both marked with a cross — or ' +
+        'never made at all, which leaves the bare outline it started as. ' +
+        'None of that is evidence. '
+      : 'The longest run on the path was already good enough to bet on. ') +
+      'It settled on the ringed one, <b>' +
+      (decision.context === '' ? 'no context at all' : decision.context) +
+      '</b>, which it had seen ' + (chosen.F + chosen.D) + ' times: ' +
+      chosen.F + ' followed by F, ' + chosen.D + ' by D. So it sealed <b>' +
+      decision.key + '</b>. You pressed <b>' + actual + '</b>. ' +
+      (decision.key === actual ? 'It had you.' : 'It missed.');
     box.append(out);
     if (data.isSample) sampleNote(box);
   }

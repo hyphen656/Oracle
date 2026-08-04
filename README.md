@@ -34,15 +34,18 @@ relative, and most social platforms require an absolute URL. Point them at
 | `index.html` | The page: the instrument, then the lecture, then the rematch |
 | `style.css` | The design system, light and dark |
 | `oracle.js` | The predictor, and only the predictor — an n-gram frequency model with backoff. This file is fetched and printed on the page, so the code a reader sees is the code the page runs |
-| `game.js` | The instrument: session, keyboard and touch input, the commit → press → reveal choreography. Mounted twice |
+| `column.js` | The instrument's drawing: six bands, one per run length, deepest at the top. A grain is one observation — left of the centre line for D, right for F — so a band's width is how much the machine knows and its lopsidedness is what it knows. The guess falls down the centre until a band is solid enough to hold it, which is backoff drawn as gravity |
+| `tree.js` | The same counts as a tree, one circle per run, used by Figure 3 in the lecture where the full portrait of the model belongs |
+| `game.js` | The instrument: endless play, keyboard and touch input, the running meter, the commit → press → reveal cycle. Mounted twice |
 | `figures.js` | The interactive figures, drawn from the reader's own session |
 | `verify-seal.html` | A test harness that plays hundreds of presses and checks the sealed prediction was committed before every one of them |
 | `fonts/`, `img/` | Self-hosted assets. Nothing is hotlinked |
 
 ## Licensing
 
-- **Code** — `oracle.js`, `game.js`, `figures.js`, `style.css`, the markup of
-  `index.html` and `verify-seal.html`: MIT, see [LICENSE](LICENSE).
+- **Code** — `oracle.js`, `column.js`, `tree.js`, `game.js`, `figures.js`,
+  `style.css`, the markup of `index.html` and `verify-seal.html`: MIT, see
+  [LICENSE](LICENSE).
 - **Prose, figures and the social card**: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 - **Photographs** — Nimwit and Theseus (MIT Museum) by Daderot, CC0 1.0; Scott
   Aaronson by Easy n, retouched by Dcoetzee, public domain. All via Wikimedia

@@ -3,21 +3,23 @@
 <div class="measure"><div id="rig"></div></div>
 <pre id="OUT" style="font:12px monospace;padding:20px;white-space:pre-wrap"></pre>
 <script src="oracle.js"></script>
+<script src="tree.js"></script>
+<script src="column.js"></script>
 <script src="game.js"></script>
 <script>
 (function(){
   var inst = createInstrument(document.getElementById('rig'), {
-    id: 'verify', label: 'rig', target: 900, extendTo: 0,
+    id: 'verify', label: 'rig',
     prompt: 'x', believe: 'x', summary: function(p){return 'x';}
   });
-  var plate = document.querySelector('#rig .plate');
+  var board = document.querySelector('#rig .board');
   var readout = document.querySelector('#rig .readout');
   var fails = [], checked = 0, emptyCommit = 0;
 
   // Press with NO delay between presses — the adversarial case: a fast
   // player trying to act inside the 700ms reveal window.
   for (var i = 0; i < 400; i++) {
-    var committed = plate.dataset.sealed;          // read BEFORE the press
+    var committed = board.dataset.sealed;          // read BEFORE the press
     if (!committed) { emptyCommit++; continue; }
     var key = Math.random() < 0.5 ? 'F' : 'D';
     // adversarial: half the time press the opposite of whatever is committed

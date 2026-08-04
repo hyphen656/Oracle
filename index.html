@@ -485,6 +485,32 @@
       enough to trust</em>, and slides down to shorter, better-supported
       questions when the specific ones are thin.</p>
 
+      <p>That notebook is the drawing you have been playing against. The bands
+      at the top of the page are the six questions the machine asks, stacked:
+      your last five presses at the top, down to no context at all — every
+      press you have ever made — at the bottom. Every grain in a band is one
+      time you produced that run and then pressed something. Grains sit left
+      of the centre line if you followed the run with D and right of it if you
+      followed it with F. So how wide a band is says how much the machine
+      knows, and how lopsided it is says what it knows.</p>
+
+      <p>The guess falls down the centre. A run it has never seen is an empty
+      band and holds nothing. A run seen exactly once is a single grain, which
+      is a coincidence rather than evidence. A run you followed with F exactly
+      as often as with D is perfectly symmetrical, and the crack down its
+      middle is open. The guess drops through every one of those and comes to
+      rest on the first band that is neither empty, nor thin, nor even — then
+      leans the way that band leans. That fall is backoff. It is the only
+      clever thing in the program, and it happens in front of you on every
+      single press.</p>
+
+      <p>Notice that the bands get wider as they get shallower, and that this
+      is not a drawing decision. The top band asks about one exact run of five
+      and has almost nothing in it; the bottom band counts every press you have
+      ever made. Evidence thins as the question gets more specific, always,
+      and that is the entire reason the machine has to be willing to give up
+      on its best question and ask a worse one.</p>
+
       <p>Notice what this means. The machine is not clever and it is not
       reading you. It is asking, over and over, one question: <em>last time
       things looked like this, what did you do?</em> Everything else on this
@@ -560,9 +586,12 @@
 
       <figure class="wide" id="fig-replay">
         <div class="figbox" id="figure-replay" data-figure="replay"></div>
-        <figcaption><b>Figure 3</b>One real prediction from your session,
-        step by step: the run it looked for, what it found, where it gave up
-        and shortened the question, and the guess it committed.</figcaption>
+        <figcaption><b>Figure 3</b>One real prediction from your session, held
+        still — and the whole notebook this time, not just the six runs the
+        instrument was asking about. Each circle is a run the machine has
+        recorded and its size is how often it happened; the lit path is your
+        last five presses, the crossed circles are the runs it gave up on, and
+        the ringed one is where the guess came to rest.</figcaption>
       </figure>
     </section>
 
@@ -863,6 +892,8 @@
 </footer>
 
 <script src="oracle.js"></script>
+<script src="tree.js"></script>
+<script src="column.js"></script>
 <script src="game.js"></script>
 <script src="figures.js"></script>
 <script>
@@ -872,27 +903,30 @@
   var first = createInstrument(document.getElementById('oracle-first'), {
     id: 'first',
     label: 'Figure 1 · The oracle',
-    target: 50,
-    extendTo: 100,
-    prompt: 'Press F or D. Try to be unpredictable.',
+    prompt: 'Press F or D. Try to be unpredictable. Play as long as you like.',
     believe: 'The guess is sealed <strong>before</strong> you press, and it is ' +
-      'really in the page while you decide: the plate carries it as ' +
+      'really in the page while you decide: the drawing carries it as ' +
       '<code>data-sealed</code>. Open your browser\'s inspector and read it ' +
-      'before you choose. The predictor is printed in full further down; it ' +
-      'is short enough to check yourself.',
+      'before you choose. Every grain above is one real observation from the ' +
+      'machine\'s own counts, with a single thing held back — the letter ' +
+      'itself, because that is the answer. The predictor is printed in full ' +
+      'further down; it is short enough to check yourself.',
     summary: function (pct, hit, n) {
+      var head = '<b>Fifty presses in.</b> ';
       if (pct >= 60) {
-        return 'The oracle predicted you ' + pct + '% of the time. A coin would ' +
-          'have managed 50%. Scroll down to find out what it saw.';
+        return head + 'The oracle predicted you ' + pct + '% of the time. A coin ' +
+          'would have managed 50%. Keep playing if you like — the meter will ' +
+          'follow you — or scroll down to find out what it saw.';
       }
       if (pct >= 50) {
-        return 'The oracle predicted you ' + pct + '% of the time, barely better ' +
-          'than a coin. That is a good result. Scroll down to find out what it ' +
-          'was looking for, and why most people do worse.';
+        return head + 'The oracle predicted you ' + pct + '% of the time, barely ' +
+          'better than a coin. That is a good result. Keep going, or scroll down ' +
+          'to find out what it was looking for and why most people do worse.';
       }
-      return 'The oracle predicted you ' + pct + '% of the time, which is worse ' +
-        'than a coin would have done. Over ' + n + ' presses that can happen by ' +
-        'luck, but it is uncommon. Scroll down to see what it was trying to do.';
+      return head + 'The oracle predicted you ' + pct + '% of the time, which is ' +
+        'worse than a coin would have done. Over ' + n + ' presses that can happen ' +
+        'by luck, but it is uncommon. Keep playing and see whether it holds, or ' +
+        'scroll down to see what it was trying to do.';
     },
     onChange: function () { if (window.oracleFigures) window.oracleFigures.refresh(); }
   });
@@ -900,25 +934,30 @@
   createInstrument(document.getElementById('oracle-rematch'), {
     id: 'rematch',
     label: 'Figure 6 · The rematch',
-    target: 50,
-    extendTo: 0,
+    compare: 'first',
     prompt: 'Same machine, same rules. You now know exactly how it works.',
-    believe: 'Same predictor, same file, same sealed-before-you-press rule. ' +
-      'Nothing about the machine has changed. The only thing that changed is ' +
-      'that you know how it works.',
+    believe: 'Same predictor, same file, same sealed-before-you-press rule, ' +
+      'and the same drawing — which you can now read. You know that the guess ' +
+      'falls to the first band that is neither empty, thin, nor even, and you ' +
+      'can see which one that is before you press. Nothing about the machine ' +
+      'has changed. The only thing that changed is that you know how it works.',
     summary: function (pct, hit, n) {
+      var head = '<b>Fifty presses in.</b> ';
       if (pct >= 55) {
-        return 'Knowing the algorithm did not save you. That is the finding, and ' +
-          'it is the same one Aaronson reported about himself.';
+        return head + 'Knowing the algorithm did not save you. That is the ' +
+          'finding, and it is the same one Aaronson reported about himself. ' +
+          'Keep going as long as you like; the mark on the meter is your first ' +
+          'round, so you can watch the two scores converge.';
       }
       if (pct >= 45) {
-        return 'You held it near chance. Worth asking honestly: did you find a ' +
-          'source of randomness outside your own head, a rhythm, a rule, ' +
-          'something you were reading off? That is how it is usually done.';
+        return head + 'You are holding it near chance. Worth asking honestly: ' +
+          'did you find a source of randomness outside your own head, a rhythm, ' +
+          'a rule, something you were reading off? That is how it is usually ' +
+          'done. Keep going and see whether it lasts.';
       }
-      return 'You beat it, and comfortably. Worth asking honestly what you used, ' +
-        'because the reliable methods all amount to taking the decision out of ' +
-        'your own head.';
+      return head + 'You are beating it, and comfortably. Worth asking honestly ' +
+        'what you are using, because the reliable methods all amount to taking ' +
+        'the decision out of your own head. Keep going and see whether it holds.';
     }
   });
 
