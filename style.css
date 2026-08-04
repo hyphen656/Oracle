@@ -25,18 +25,16 @@
   --band:#E9EBE6;
   --photo-filter:none;
 
-  /* Verdigris: the touch colour. It marks what the reader can act on —
-     links, keys, buttons, focus rings — and nothing else. Relay stays the
-     machine's colour, filament stays the machine's win, so the three never
-     compete: green is you, blue is it, red is it beating you.
+  /* Verdigris: the reader's colour. It marks what you can act on — links,
+     keys, buttons, focus rings — and the editorial furniture around the
+     argument: eyebrows, figure labels, list markers, the rule down the
+     side of a note. It never touches a reading. Relay stays the machine's
+     colour, filament stays the machine's win, so the three never compete:
+     green is you, blue is it, red is it beating you.
      --edge is the steel-green idle border, --tint the hover wash. */
   --verdigris:#115F43;
   --verdigris-edge:#9FBEB0;
   --verdigris-tint:rgba(17,95,67,.07);
-  /* The instrument's top rule. Its own token because a full-bleed line
-     carries far more weight than a border: at the dark theme's mint it is
-     the loudest thing on the page, so dark damps it and light does not. */
-  --verdigris-rule:var(--verdigris);
 
   --measure:38rem;   /* prose, about 64 characters */
   --rail:14rem;      /* margin column: notes, portraits, plates */
@@ -62,7 +60,6 @@
     --verdigris:#45C99A;
     --verdigris-edge:#2E5346;
     --verdigris-tint:rgba(69,201,154,.12);
-    --verdigris-rule:#2C7F62;
   }
 }
 /* An explicit choice beats the browser's, in both directions. */
@@ -78,7 +75,6 @@
   --verdigris:#45C99A;
   --verdigris-edge:#2E5346;
   --verdigris-tint:rgba(69,201,154,.12);
-  --verdigris-rule:#2C7F62;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -131,9 +127,13 @@ body{
 .measure{max-width:var(--measure);margin-inline:auto;padding-inline:20px}
 .wide-legacy{max-width:var(--wide);margin-inline:auto;padding-inline:20px}
 
+/* The eyebrow is the page's smallest voice and now its most frequent bit
+   of colour: one green line above every section head and above each
+   instrument. It is a label, never a reading — nothing the machine
+   measured is ever green. */
 .eyebrow{
   font-family:var(--mono);font-weight:500;font-size:.75rem;
-  text-transform:uppercase;letter-spacing:.14em;color:var(--graphite);
+  text-transform:uppercase;letter-spacing:.14em;color:var(--verdigris);
 }
 
 a{color:var(--verdigris);text-underline-offset:.15em;
@@ -168,11 +168,7 @@ a:hover{text-decoration-color:var(--verdigris)}
 .themetoggle[hidden]{display:none}
 
 /* -------------------------------------------------------- instrument */
-/* The band you can act inside is edged in the touch colour: a 2px verdigris
-   rule on top, hairline everywhere else. It is the page's one structural
-   use of green, and it says "the apparatus starts here". */
-.instrument{border-top:2px solid var(--verdigris-rule);
-  border-bottom:1px solid var(--hairline);padding:24px 0 32px}
+.instrument{border-block:1px solid var(--hairline);padding:24px 0 32px}
 .inst-head{
   display:flex;justify-content:space-between;align-items:baseline;
   gap:16px;margin-bottom:40px;
@@ -395,9 +391,9 @@ a:hover{text-decoration-color:var(--verdigris)}
 
 .believe{
   font-size:.875rem;color:var(--graphite);margin-top:28px;
-  border-left:2px solid var(--hairline);padding-left:16px;width:100%;
+  border-left:2px solid var(--verdigris-edge);padding-left:16px;width:100%;
 }
-.believe strong{font-weight:600;color:var(--ink)}
+.believe strong{font-weight:600;color:var(--verdigris)}
 
 .nojs{font-size:.9375rem;color:var(--graphite);text-align:center;
   padding:32px 0}
@@ -416,9 +412,13 @@ a:hover{text-decoration-color:var(--verdigris)}
 .section p:last-child{margin-bottom:0}
 .section ol,.section ul{margin:0 0 1.15em 1.4em}
 .section li{margin-bottom:.4em}
+/* The counter and the bullet, not the sentence. A list gets its accent
+   from the furniture down its left edge. */
+.section li::marker{color:var(--verdigris)}
+.refs li::marker{color:var(--verdigris)}
 
 blockquote{
-  margin:28px 0;padding-left:24px;border-left:2px solid var(--hairline);
+  margin:28px 0;padding-left:24px;border-left:2px solid var(--verdigris-edge);
   font-style:italic;
 }
 blockquote p{margin-bottom:.7em}
@@ -436,7 +436,7 @@ figure{margin:40px 0}
 figcaption{font-size:.875rem;color:var(--graphite);margin-top:12px;
   line-height:1.5}
 figcaption b{font-family:var(--mono);font-weight:500;font-size:.75rem;
-  text-transform:uppercase;letter-spacing:.14em;color:var(--graphite);
+  text-transform:uppercase;letter-spacing:.14em;color:var(--verdigris);
   margin-right:8px}
 
 .codeblock{
@@ -456,7 +456,9 @@ figcaption b{font-family:var(--mono);font-weight:500;font-size:.75rem;
 .refs li:target{background:var(--verdigris-tint);
   outline:4px solid var(--verdigris-tint)}
 
-code{font-family:var(--mono);font-size:.9em}
+code{font-family:var(--mono);font-size:.9em;color:var(--verdigris)}
+/* The listing is the machine talking; it keeps ink. */
+.codeblock code{color:inherit}
 sup{font-size:.7em;line-height:0;vertical-align:super}
 sup a,a sup{text-decoration:none}
 a:has(sup){text-decoration:none;padding-inline:.1em}
@@ -471,8 +473,8 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
 .fighead{font-size:.875rem;color:var(--graphite);margin-bottom:16px;line-height:1.5}
 .stepout{font-size:.9375rem;margin-top:16px}
 .fignote{font-size:.8125rem;color:var(--graphite);margin-top:16px;
-  border-left:2px solid var(--hairline);padding-left:12px}
-.fignote b{font-weight:600}
+  border-left:2px solid var(--verdigris-edge);padding-left:12px}
+.fignote b{font-weight:600;color:var(--verdigris)}
 
 /* Figure 2: the frequency notebook */
 .freq{display:grid;grid-template-columns:auto 1fr auto;gap:7px 14px;align-items:center}
@@ -604,7 +606,7 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
   color:var(--graphite);text-transform:uppercase;letter-spacing:.08em;
   padding-right:28px;margin-top:6px;
 }
-.railnote b{color:var(--ink);font-weight:500}
+.railnote b{color:var(--verdigris);font-weight:500}
 @media (max-width:63.99rem){
   .railnote{
     text-transform:none;letter-spacing:0;font-size:.8125rem;
@@ -622,7 +624,7 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
 .sitefoot p + p{margin-top:1em}
 .sitefoot h2{
   font-family:var(--mono);font-weight:500;font-size:.75rem;
-  text-transform:uppercase;letter-spacing:.14em;color:var(--graphite);
+  text-transform:uppercase;letter-spacing:.14em;color:var(--verdigris);
   margin-bottom:14px;
 }
 .sitefoot p,.sitefoot li{font-size:.875rem;color:var(--graphite);
