@@ -13,6 +13,15 @@
 # Vercel CLI, if you ever link the project locally
 .vercel
 
+# Claude Code local settings
+.claude/
+
+# Throwaway harnesses. Preview pages and headless test rigs get written
+# beside the real files so they can load them over http; they are scaffolding
+# and must never ship. verify-seal.html is not one of these — it is tracked
+# on purpose, because it is the proof behind the credibility note.
+_*.html
+
 # Working documents: the mission, the plan, the design spec, the research
 # dossier and the agent instructions. These govern how the site is built;
 # they are not part of the site. They stay on disk and out of the repo.
