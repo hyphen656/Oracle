@@ -25,6 +25,19 @@
   --band:#E9EBE6;
   --photo-filter:none;
 
+  /* Verdigris: the touch colour. It marks what the reader can act on —
+     links, keys, buttons, focus rings — and nothing else. Relay stays the
+     machine's colour, filament stays the machine's win, so the three never
+     compete: green is you, blue is it, red is it beating you.
+     --edge is the steel-green idle border, --tint the hover wash. */
+  --verdigris:#115F43;
+  --verdigris-edge:#9FBEB0;
+  --verdigris-tint:rgba(17,95,67,.07);
+  /* The instrument's top rule. Its own token because a full-bleed line
+     carries far more weight than a border: at the dark theme's mint it is
+     the loudest thing on the page, so dark damps it and light does not. */
+  --verdigris-rule:var(--verdigris);
+
   --measure:38rem;   /* prose, about 64 characters */
   --rail:14rem;      /* margin column: notes, portraits, plates */
   --wide:48rem;      /* legacy alias, still used by .wide-legacy */
@@ -46,6 +59,10 @@
     --filament:#E4735C;
     --band:#1C1F24;
     --photo-filter:brightness(.92) contrast(.96);
+    --verdigris:#45C99A;
+    --verdigris-edge:#2E5346;
+    --verdigris-tint:rgba(69,201,154,.12);
+    --verdigris-rule:#2C7F62;
   }
 }
 /* An explicit choice beats the browser's, in both directions. */
@@ -58,6 +75,10 @@
   --filament:#E4735C;
   --band:#1C1F24;
   --photo-filter:brightness(.92) contrast(.96);
+  --verdigris:#45C99A;
+  --verdigris-edge:#2E5346;
+  --verdigris-tint:rgba(69,201,154,.12);
+  --verdigris-rule:#2C7F62;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -115,13 +136,15 @@ body{
   text-transform:uppercase;letter-spacing:.14em;color:var(--graphite);
 }
 
-a{color:var(--relay);text-underline-offset:.15em;text-decoration-color:var(--hairline)}
-a:hover{text-decoration-color:var(--relay)}
-:focus-visible{outline:2px solid var(--relay);outline-offset:2px}
+a{color:var(--verdigris);text-underline-offset:.15em;
+  text-decoration-color:var(--verdigris-edge)}
+a:hover{text-decoration-color:var(--verdigris)}
+:focus-visible{outline:2px solid var(--verdigris);outline-offset:2px}
+::selection{background:var(--verdigris-tint)}
 
 .skip{position:absolute;left:-9999px}
 .skip:focus{left:20px;top:12px;background:var(--vellum);padding:8px 12px;
-  border:1px solid var(--relay);z-index:10}
+  border:1px solid var(--verdigris);color:var(--verdigris);z-index:10}
 
 /* ---------------------------------------------------------- masthead */
 .masthead{padding:88px 0 56px}
@@ -137,14 +160,19 @@ a:hover{text-decoration-color:var(--relay)}
   font-family:var(--mono);font-weight:500;font-size:.6875rem;
   text-transform:uppercase;letter-spacing:.12em;
   color:var(--graphite);background:var(--vellum);
-  border:1px solid var(--hairline);padding:8px 12px;cursor:pointer;
+  border:1px solid var(--verdigris-edge);padding:8px 12px;cursor:pointer;
   touch-action:manipulation;
 }
-.themetoggle:hover{border-color:var(--relay);color:var(--relay)}
+.themetoggle:hover{border-color:var(--verdigris);color:var(--verdigris);
+  background:var(--verdigris-tint)}
 .themetoggle[hidden]{display:none}
 
 /* -------------------------------------------------------- instrument */
-.instrument{border-block:1px solid var(--hairline);padding:24px 0 32px}
+/* The band you can act inside is edged in the touch colour: a 2px verdigris
+   rule on top, hairline everywhere else. It is the page's one structural
+   use of green, and it says "the apparatus starts here". */
+.instrument{border-top:2px solid var(--verdigris-rule);
+  border-bottom:1px solid var(--hairline);padding:24px 0 32px}
 .inst-head{
   display:flex;justify-content:space-between;align-items:baseline;
   gap:16px;margin-bottom:40px;
@@ -310,15 +338,21 @@ a:hover{text-decoration-color:var(--relay)}
 .key{
   font-family:var(--mono);font-weight:500;font-size:2rem;
   color:var(--ink);background:var(--vellum);
-  border:1px solid var(--hairline);
+  border:1px solid var(--verdigris-edge);
   min-width:112px;height:64px;
   display:grid;place-items:center;cursor:pointer;
   touch-action:manipulation;user-select:none;-webkit-user-select:none;
   -webkit-tap-highlight-color:transparent;
-  transition:color .09s linear,transform .09s linear;
+  transition:color .09s linear,transform .09s linear,
+             border-color .09s linear,background-color .09s linear;
 }
-.key.is-struck{color:var(--relay);transform:translateY(1px)}
-.key[disabled]{cursor:default;opacity:.45}
+.key:hover:not([disabled]){border-color:var(--verdigris);
+  background:var(--verdigris-tint)}
+/* The strike is the reader's act, so it is green. The prediction under it
+   stays --relay: that one belongs to the machine. */
+.key.is-struck{color:var(--verdigris);border-color:var(--verdigris);
+  background:var(--verdigris-tint);transform:translateY(1px)}
+.key[disabled]{cursor:default;opacity:.45;border-color:var(--hairline)}
 
 .tally{display:flex;flex-wrap:wrap;gap:3px;margin-top:40px;
   min-height:18px;width:100%}
@@ -352,11 +386,12 @@ a:hover{text-decoration-color:var(--relay)}
 .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
 .btn{
   font-family:var(--mono);font-size:.75rem;text-transform:uppercase;
-  letter-spacing:.1em;color:var(--relay);background:var(--vellum);
-  border:1px solid var(--hairline);padding:10px 16px;cursor:pointer;
+  letter-spacing:.1em;color:var(--verdigris);background:var(--vellum);
+  border:1px solid var(--verdigris-edge);padding:10px 16px;cursor:pointer;
   touch-action:manipulation;
+  transition:border-color .09s linear,background-color .09s linear;
 }
-.btn:hover{border-color:var(--relay)}
+.btn:hover{border-color:var(--verdigris);background:var(--verdigris-tint)}
 
 .believe{
   font-size:.875rem;color:var(--graphite);margin-top:28px;
@@ -416,7 +451,10 @@ figcaption b{font-family:var(--mono);font-weight:500;font-size:.75rem;
 
 .refs{font-size:.9375rem}
 .refs li{margin-bottom:.75em}
-.refs li:target{background:rgba(27,77,143,.07);outline:4px solid rgba(27,77,143,.07)}
+/* Landing on a reference is the end of a click, so it lights in the touch
+   colour like everything else the reader drove. */
+.refs li:target{background:var(--verdigris-tint);
+  outline:4px solid var(--verdigris-tint)}
 
 code{font-family:var(--mono);font-size:.9em}
 sup{font-size:.7em;line-height:0;vertical-align:super}
@@ -529,6 +567,7 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
   color:var(--graphite);letter-spacing:.04em;margin-top:8px;line-height:1.5;
 }
 .credit a{color:var(--graphite)}
+.credit a:hover{color:var(--verdigris)}
 
 /* ------------------------------------------------------- quote bands
    The historical quotations, given the width they deserve. A band is
@@ -616,5 +655,5 @@ a:has(sup){text-decoration:none;padding-inline:.1em}
 }
 
 @media (prefers-reduced-motion:reduce){
-  .key{transition:none}
+  .key,.btn{transition:none}
 }
